@@ -1,0 +1,21 @@
+{
+    "contacts": [{
+        "name": "John Malkovitch",
+        "image": "/images/user-1.png"
+    }, {
+        "name": "Karl Marx",
+        "image": "/images/user-2.png"
+    }, {
+        "name": "Friedrich Engels",
+        "image": "/images/user-3.png"
+    }, {
+        "name": "Adam Smith",
+        "image": "/images/user-4.png"
+    }, {
+        "name": "William Wallace",
+        "image": "/images/user-5.png"
+    }, {
+        "name": "Leo Tolstoy",
+        "image": "/images/user-6.png"
+    }]
+}
