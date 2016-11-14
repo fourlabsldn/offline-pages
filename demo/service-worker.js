@@ -1,36 +1,65 @@
 // We will cache requests for a week.
+
+// Returns a string of the form DD/MM/YYYY
+function daysAgo(num) {
+  const millisecondsInADay = 86400000;
+  const d = new Date(Date.now() - num * millisecondsInADay);
+  return `${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
+}
+
 const CACHE_VERSION = 1;
+const CURRENT_CACHES = [
+  `v${CACHE_VERSION}-${daysAgo(0)}`,
+  `v${CACHE_VERSION}-${daysAgo(1)}`,
+  `v${CACHE_VERSION}-${daysAgo(2)}`,
+  `v${CACHE_VERSION}-${daysAgo(3)}`,
+  `v${CACHE_VERSION}-${daysAgo(4)}`,
+  `v${CACHE_VERSION}-${daysAgo(5)}`,
+  `v${CACHE_VERSION}-${daysAgo(6)}`,
+];
 
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', event => {
   // Delete all caches that aren't named in CURRENT_CACHES.
   // While there is only one cache in this example, the same logic will handle the case where
   // there are multiple versioned caches.
-  var expectedCacheNames = Object.keys(CURRENT_CACHES).map(function(key) {
-    return CURRENT_CACHES[key];
-  });
 
-  event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          if (expectedCacheNames.indexOf(cacheName) === -1) {
-            // If this cache name isn't present in the array of "expected" cache names, then delete it.
-            console.log('Deleting out of date cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
+  const cacheCleaning = window.caches.keys()
+    .then(cacheNames => {
+      // If this cache name isn't present in the array of "expected" cache names, then delete it.
+      const cacheDeletions = cacheNames
+        .filter(n => !CURRENT_CACHES.includes(n))
+        .map(n => caches.delete(n));
+
+      return Promise.all(cacheDeletions);
+    });
+
+  event.waitUntil(cacheCleaning);
 });
+
+
+/**
+ * @method getCachedRequest
+ * @param  {Request} req
+ * @return {Promise<Response>} - Will resolve with a response, if found, or undefined if not.
+ */
+function getCachedRequest(req) {
+  const cachesSearch = CURRENT_CACHES
+    .map(cacheName => window.caches.open(cacheName))
+    .map(cache => cache.match(req))
+    // We are not interested in errors fetching cached resources, so we just ignore them
+    .map(matchPromise => matchPromise.catch(() => undefined));
+
+  return Promise.all(cachesSearch)
+    .then(results => results.filter(r => r)) // remove undefined values
+    .then(results => results[0]); // use newest value
+}
 
 self.addEventListener('fetch', function(event) {
   console.log('Handling fetch event for', event.request.url);
 
-  event.respondWith(
-    caches.open(CURRENT_CACHES.font).then(function(cache) {
-      return cache.match(event.request).then(function(response) {
+    getCachedRequest(event.request)
+      .then(function(response) {
         if (response) {
           // If there is an entry in the cache for event.request, then response will be defined
           // and we can just return it. Note that in this example, only font resources are cached.
@@ -74,7 +103,8 @@ self.addEventListener('fetch', function(event) {
           // Return the original response object, which will be used to fulfill the resource request.
           return response;
         });
-      }).catch(function(error) {
+      })
+      .catch(function(error) {
         // This catch() will handle exceptions that arise from the match() or fetch() operations.
         // Note that a HTTP error response (e.g. 404) will NOT trigger an exception.
         // It will return a normal response object that has the appropriate error code set.
@@ -83,5 +113,5 @@ self.addEventListener('fetch', function(event) {
         throw error;
       });
     })
-  );
+  event.respondWith();
 });
