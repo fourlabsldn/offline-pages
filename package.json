@@ -1,0 +1,25 @@
+{
+  "name": "offline-pages",
+  "version": "1.0.0",
+  "description": "Service worker test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fourlabsldn/offline-pages.git"
+  },
+  "author": "Lazamar @ FourLabs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fourlabsldn/offline-pages/issues"
+  },
+  "homepage": "https://github.com/fourlabsldn/offline-pages#readme",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.17.6"
+  }
+}
