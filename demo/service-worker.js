@@ -1,4 +1,5 @@
 // We will cache requests for a week.
+console.log('I started');
 
 // Returns a string of the form DD/MM/YYYY
 function daysAgo(num) {
@@ -28,7 +29,7 @@ const CURRENT_CACHES = [
 
 // Delete all caches that aren't named in CURRENT_CACHES.
 self.addEventListener('activate', event => {
-  const cacheCleaning = window.caches.keys()
+  const cacheCleaning = caches.keys()
     .then(cacheNames => cacheNames
         .filter(n => !CURRENT_CACHES.includes(n))
         .map(n => caches.delete(n))
@@ -51,8 +52,6 @@ self.addEventListener('activate', event => {
  * @return {Response}
  */
 function fetchedFromNetwork(request, response) {
-  console.log('WORKER: fetch response from network.', event.request.url);
-
   const cacheCopy = response.clone();
   const mostRecentCache = CURRENT_CACHES[0];
 
@@ -61,17 +60,14 @@ function fetchedFromNetwork(request, response) {
   // should cache selectively because our cache has a space limit.
   caches
     .open(mostRecentCache)
-    .then(cache => cache.put(request, cacheCopy))
-    .then(() => console.log('WORKER: fetch response stored in cache.', event.request.url));
+    .then(cache => cache.put(request, cacheCopy));
 
   // Return the response so that the promise is settled in fulfillment.
-  return response;
+  return response.clone();
 }
 
 // Listen to page requests
 self.addEventListener('fetch', event => {
-  console.log('Handling fetch event for', event.request.url);
-
   // We should only cache GET requests.
   if (event.request.method !== 'GET') {
     console.log('WORKER: fetch event ignored.', event.request.method, event.request.url);
@@ -80,10 +76,12 @@ self.addEventListener('fetch', event => {
 
   const responseRetrieval = caches
     .match(event.request)
+    .catch(() => console.log('WORKER: Error getting info from cache for', event.request.url))
     .then(cached => {
       const networked = fetch(event.request)
         // We handle the network request with success and failure scenarios.
-        .then(response => fetchedFromNetwork(event.request, response));
+        .then(response => fetchedFromNetwork(event.request, response))
+        .catch(() => console.log('WORKER: Error in fetch request for', event.request.url));
         // We coule decide to catch requests that fail for both the cache and the
         // network in here, but at the moment we won't do it.
 
