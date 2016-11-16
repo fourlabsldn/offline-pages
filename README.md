@@ -9,11 +9,11 @@ This demo aims at implementing a reusable Service Worker that can easily be conf
 
 Certain requests, such as retrieval of database content, must always serve the most up to date content, but if the user is offline serving cached content will suffice.
 
-### Cache size management
+### Cache size management ✓
 
 This includes making sure that:
 
-- Content is not cached for too long as old content is less relevant.
+- Content is not cached for too long as old content is less relevant. ✓
 - Content that is too big is handled correctly (using [indexedDB](https://developer.mozilla.org/en/docs/Web/API/IndexedDB_API) and other storage options)
 
 ### Reliable submission of requests made offline
