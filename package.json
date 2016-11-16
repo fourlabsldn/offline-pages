@@ -24,6 +24,9 @@
     "require-dir-all": "^0.4.10"
   },
   "devDependencies": {
-    "browser-sync": "^2.17.6"
+    "browser-sync": "^2.17.6",
+    "express-handlebars": "^3.0.0",
+    "lodash": "^4.17.2",
+    "swag": "^0.7.0"
   }
 }

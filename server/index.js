@@ -1,12 +1,37 @@
 /* eslint-disable dot-notation */
-
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
+const exphbs = require('express-handlebars');
+const Swag = require('swag');
 const path = require('path');
+const bodyParser = require('body-parser');
 const requireDir = require('require-dir-all');
 const routes = requireDir('./routes');
+const { curry } = require('lodash/fp');
 
+// =============================================================================
+//   TEMPLATE ENGINE SETUP
+// =============================================================================
+
+// prepare Swag handlebars helpers
+const helpers = {};
+Swag.registerHelpers({ registerHelper(hn, hf) { helpers[hn] = hf; } });
+
+// Use Handlebars
+app.engine('.hbs', exphbs({
+  extname: '.hbs',
+  defaultLayout: 'main',
+  helpers,
+  layoutsDir: path.join(__dirname, 'templates/layouts'),
+  partialsDir: path.join(__dirname, 'templates/partials'),
+}));
+
+app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, 'templates'));
+
+// =============================================================================
+//    ROUTES SETUP
+// =============================================================================
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -21,10 +46,20 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', (req, res) => res.redirect('/pages'));
 app.use('/', express.static(path.join(__dirname, '../static')));
 
-// Routes
+const renderTemplate = curry((template, req, res) => {
+  res.locals.title = template; // eslint-disable-line no-param-reassign
+  res.render(template);
+});
+
+// Pages
+app.get('/', (req, res) => res.redirect('/home'));
+app.get('/home', renderTemplate('home'));
+app.get('/contacts', renderTemplate('contacts'));
+app.get('/projects', renderTemplate('projects'));
+
+// API Routes
 app.get('/messages', routes['messages']);
 app.post('/new-message', routes['new-message']);
 app.get('/contacts', routes['contacts']);
@@ -32,7 +67,10 @@ app.get('/contact-info', routes['contact-info']);
 app.get('/projects', routes['projects']);
 
 
-// Start server
+// =============================================================================
+//    SERVER STARTUP
+// =============================================================================
+
 const http = require('http').Server(app); // eslint-disable-line new-cap
 const PORT = 8080;
 http.listen(PORT, () => {

@@ -1,0 +1,35 @@
+<div class="jumbotron">
+  <h1>Projects</h1>
+  <p class="lead">Offline Website - Content should be displayed even if there is no connection</p>
+  <p><a class="btn btn-lg btn-success" href="/database" role="button">Big button</a></p>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Project Managers</th>
+      <th>Logo</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<script>
+  fetch('../js/projects.json')
+  .then(r => r.json())
+  .then(r => {
+    const tableRows = r.projects.map(p => `
+      <tr>
+        <th scope="row">${p.name}</th>
+        <td>${p.date}</td>
+        <td>${p.manager}</td>
+        <td><img src="${p.logo}" alt="" style="max-width: 50px"></td>
+      </tr>
+    `);
+
+    document.querySelector('tbody').innerHTML = tableRows.join('');
+  });
+</script>
