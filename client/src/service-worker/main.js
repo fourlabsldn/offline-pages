@@ -1,3 +1,8 @@
-import installation from './installation';
+import install from './install';
+install(self);
 
-installation(self);
+import activate from './activate';
+activate(self);
+
+import fetchIntercept from './fetchIntercept';
+fetchIntercept(self);
