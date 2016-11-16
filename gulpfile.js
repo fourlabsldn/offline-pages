@@ -2,8 +2,8 @@
 
 // List all available tasks
 
-const src = 'static/src';
-const dest = 'static/build';
+const src = 'client/src';
+const dest = 'client/build';
 const path = require('path');
 
 const organiser = require('gulp-organiser');
