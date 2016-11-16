@@ -8,7 +8,8 @@
   website is affected.
  */
 
-import UserCache from './UserCache';
+import UserCache from '../UserCache';
+import cacheThenNetwork from './cacheThenNetwork';
 
 /*
   Here we have a neat non-standard trick.
@@ -24,12 +25,37 @@ import UserCache from './UserCache';
  */
 let cleanupDone = false;
 
-export default event => {
+/**
+ * This function takes care of serving the appropriate content, be
+ * that from the network or from the cache.
+ *
+ * If it is from the network it also caches the content.
+ * @method fetchIntercept
+ * @param  {Request} request
+ * @return {Promise<Response> | null}
+ */
+function fetchIntercept(request) {
   if (!cleanupDone) {
-    console.log('WORKER: Doing cleanup');
     UserCache.cleanup();
     cleanupDone = true;
   }
 
-  return;
+  if (request.method === 'GET') {
+    return cacheThenNetwork(request);
+  }
+
+  // Just do the normal request and let the browser take care of caching.
+  return null;
+}
+
+
+
+
+
+export default event => {
+  const response = fetchIntercept(event.request);
+
+  if (response) {
+    event.respondWith(response);
+  }
 };

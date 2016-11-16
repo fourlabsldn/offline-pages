@@ -1,7 +1,7 @@
 /*
   Here we specify the cache names we are using
  */
-import { filter, includes, map } from 'lodash/fp';
+import { filter, includes, map, curry } from 'lodash/fp';
 
 // When we change our cache version all caches of previous versions are deleted
 const CACHE_VERSION = 1;
@@ -57,5 +57,34 @@ UserCache.cleanup = () => {
     .then(filter(cName => includes(cName, cacheNames.all)))
     .then(map(cName => caches.delete(cName)));
 };
+
+/**
+ * Saves a network response in the cache, making sure to erase any
+ * previous versions of it.
+ * @method save
+ * @param  {Request} request
+ * @param  {Response} response
+ * @return {Promise<void>}
+ */
+UserCache.save = curry((request, response) => {
+  // Delete cache containing this request.
+  caches
+    .keys()
+    .then(map(n => caches.open(n)))
+    .then(cachePromises => Promise.all(cachePromises))
+    .then(cs => {
+      cs.forEach(cache => {
+        cache
+          .match(request)
+          .then(resp => resp || cache.delete(request));
+      });
+    });
+
+  // Cache network response
+  const responseClone = response.clone();
+  return caches
+    .open(UserCache.names().newest)
+    .then(cache => cache.put(request, responseClone));
+});
 
 export default UserCache;
