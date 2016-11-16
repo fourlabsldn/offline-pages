@@ -36,7 +36,7 @@ Making the website available offline means the user never gets a "Oh no, you are
 
 Saying what to cache is not hard, but currently there is no set way of to dynamically tell the service worker when to renew content. This needs to be setup.
 
-### Proactively download and cache crucial content
+### Proactively download and cache crucial content ✓
 
 Things are cached after they are requested at least once. To cache the most important pages of the website would require the user to visit these pages first. We don't want to count on that. The service worker must be able to download and cache crucial content before the user ever asks for it.
 
