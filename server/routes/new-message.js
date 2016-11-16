@@ -5,7 +5,7 @@ module.exports = (req, res) => {
 
   const newMessage = {
     content: req.body.content,
-    userId: req.body.userId,
+    contactId: req.body.contactId,
   };
 
   req.app.locals.messages.push(newMessage);

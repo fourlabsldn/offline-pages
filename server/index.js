@@ -1,3 +1,5 @@
+/* eslint-disable dot-notation */
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -19,12 +21,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', express.static(path.join(__dirname, '../client')));
+app.use('/', (req, res) => res.redirect('/pages'));
+app.use('/', express.static(path.join(__dirname, '../static')));
 
 // Routes
-app.get('/messages', routes.messages);
+app.get('/messages', routes['messages']);
 app.post('/new-message', routes['new-message']);
-app.get('/user-info', routes['user-info']);
+app.get('/contacts', routes['contacts']);
+app.get('/contact-info', routes['contact-info']);
+app.get('/projects', routes['projects']);
 
 
 // Start server
@@ -32,6 +37,6 @@ const http = require('http').Server(app); // eslint-disable-line new-cap
 const PORT = 8080;
 http.listen(PORT, () => {
   console.log(`
-    Silve-Magpie development server listening on port ${PORT}
+    Offline pages server listening on port ${PORT}
   `);
 });
