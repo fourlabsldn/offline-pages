@@ -46,7 +46,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', express.static(path.join(__dirname, '../static')));
+app.use('/', express.static(path.join(__dirname, '../client/build')));
 
 const renderTemplate = curry((template, req, res) => {
   res.locals.title = template; // eslint-disable-line no-param-reassign
@@ -58,6 +58,7 @@ app.get('/', (req, res) => res.redirect('/home'));
 app.get('/home', renderTemplate('home'));
 app.get('/contacts', renderTemplate('contacts'));
 app.get('/projects', renderTemplate('projects'));
+app.get('/offline', renderTemplate('offline'));
 
 // API Routes
 app.get('/messages', routes['messages']);
