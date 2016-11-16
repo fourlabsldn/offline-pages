@@ -1,6 +1,11 @@
 /*
   Here we specify the cache names we are using
  */
+import { filter, includes, map } from 'lodash/fp';
+
+// When we change our cache version all caches of previous versions are deleted
+const CACHE_VERSION = 1;
+const PERMANENT_CACHE = `v${CACHE_VERSION}-permanent`;
 
 const UserCache = {};
 
@@ -11,14 +16,10 @@ function daysAgo(num) {
   return `${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`;
 }
 
-// When we change our cache version all caches of previous versions are deleted
-const CACHE_VERSION = 1;
-const PERMANENT_CACHE = `v${CACHE_VERSION}-permanent`;
-
 /**
  * Returns an object with the names of the caches that are currently in use.
  * @method names
- * @return {[type]} [description]
+ * @return {Object}
  */
 UserCache.names = () => {
   // We have a cache for each day of the week.
@@ -40,6 +41,21 @@ UserCache.names = () => {
     newest: temporaryCache[0],
     oldest: temporaryCache.slice(-1)[0], // last element
   };
+};
+
+/**
+ * Delete all caches that are too old.
+ * @method cleanup
+ * @return {Promise<void>}
+ */
+UserCache.cleanup = () => {
+  const cacheNames = UserCache.names();
+
+  // Remove all caches whose name is not in cacheNames.all
+  return caches
+    .keys()
+    .then(filter(cName => includes(cName, cacheNames.all)))
+    .then(map(cName => caches.delete(cName)));
 };
 
 export default UserCache;

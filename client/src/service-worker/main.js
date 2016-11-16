@@ -1,8 +1,11 @@
+
+
 import install from './install';
-install(self);
+self.addEventListener('fetch', install);
+
 
 import activate from './activate';
-activate(self);
+self.addEventListener('activate', activate);
 
 import fetchIntercept from './fetchIntercept';
-fetchIntercept(self);
+self.addEventListener('fetch', fetchIntercept);

@@ -15,14 +15,12 @@ const CRITICAL_FILES = [
   '/offline',
 ];
 
-export default serviceWorker => {
-  serviceWorker.addEventListener('install', event => {
-    const cacheNames = UserCache.names();
+export default event => {
+  const cacheNames = UserCache.names();
 
-    const cachingCriticalAssets = caches
-      .open(cacheNames.permanent)
-      .then(cache => cache.addAll(CRITICAL_FILES));
+  const cachingCriticalAssets = caches
+    .open(cacheNames.permanent)
+    .then(cache => cache.addAll(CRITICAL_FILES));
 
-    event.waitUntil(cachingCriticalAssets);
-  });
+  event.waitUntil(cachingCriticalAssets);
 };
