@@ -22,7 +22,8 @@
     "express": "^4.14.0",
     "gulp": "^3.9.1",
     "mongodb": "^2.2.11",
-    "require-dir-all": "^0.4.10"
+    "require-dir-all": "^0.4.10",
+    "sw-toolbox": "^3.4.0"
   },
   "devDependencies": {
     "babel-plugin-lodash": "^3.2.9",
@@ -30,12 +31,14 @@
     "babel-preset-es2015-rollup": "^1.2.0",
     "babel-preset-es2017": "^6.16.0",
     "browser-sync": "^2.17.6",
+    "dep-linker": "^1.0.24",
     "express-handlebars": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-flatmap": "^1.0.0",
     "gulp-organiser": "^1.0.6",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.2.0",
+    "gulp-util": "^3.0.7",
     "lodash": "^4.17.2",
     "path": "^0.12.7",
     "rollup-plugin-babel": "^2.6.1",
@@ -43,6 +46,7 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-stream": "^1.14.0",
+    "sw-precache": "^4.2.1",
     "swag": "^0.7.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
