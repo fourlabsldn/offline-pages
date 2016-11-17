@@ -54,7 +54,9 @@ UserCache.cleanup = () => {
   // Remove all caches whose name is not in cacheNames.all
   return caches
     .keys()
-    .then(filter(cName => includes(cName, cacheNames.all)))
+    .then(cacheKeys => {
+      return cacheKeys.filter(k => !cacheNames.all.includes(k));
+    })
     .then(map(cName => caches.delete(cName)));
 };
 
@@ -64,7 +66,7 @@ UserCache.cleanup = () => {
  * @method save
  * @param  {Request} request
  * @param  {Response} response
- * @return {Promise<void>}
+ * @return {Promise<Response>}
  */
 UserCache.save = curry((request, response) => {
   // Delete cache containing this request.
@@ -84,7 +86,8 @@ UserCache.save = curry((request, response) => {
   const responseClone = response.clone();
   return caches
     .open(UserCache.names().newest)
-    .then(cache => cache.put(request, responseClone));
+    .then(cache => cache.put(request, responseClone))
+    .then(() => response);
 });
 
 export default UserCache;

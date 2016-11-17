@@ -7,4 +7,7 @@
 
 import UserCache from './UserCache';
 
-export default event => event.waitUntil(UserCache.cleanup());
+export default event => {
+  console.log('activating');
+  event.waitUntil(UserCache.cleanup());
+};

@@ -16,6 +16,7 @@ const CRITICAL_FILES = [
 ];
 
 export default event => {
+  console.log('Installing');
   const cacheNames = UserCache.names();
 
   const cachingCriticalAssets = caches

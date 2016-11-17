@@ -12,6 +12,7 @@ organiser.registerAll('./gulp-tasks', {
     src: path.join(src, 'service-worker/main.js'),
     dest,
     rename: 'service-worker.js',
+    watch: path.join(src, 'service-worker/**/*'),
   },
   'copy-static': {
     src: [path.join(src, '**/*'), `!${path.join(src, 'service-worker')}`],

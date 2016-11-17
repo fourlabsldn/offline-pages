@@ -10,6 +10,7 @@
 
 import UserCache from '../UserCache';
 import cacheThenNetwork from './cacheThenNetwork';
+import { curry } from 'lodash/fp';
 
 /*
   Here we have a neat non-standard trick.
@@ -29,13 +30,13 @@ let cleanupDone = false;
  * This function takes care of serving the appropriate content, be
  * that from the network or from the cache.
  *
- * If it is from the network it also caches the content.
  * @method fetchIntercept
  * @param  {Request} request
  * @return {Promise<Response> | null}
  */
 function fetchIntercept(request) {
   if (!cleanupDone) {
+    console.log('Doing cleanup because of', request.url);
     UserCache.cleanup();
     cleanupDone = true;
   }
@@ -48,14 +49,34 @@ function fetchIntercept(request) {
   return null;
 }
 
+const offlineFallback = curry((request, err) => {
+  console.log('catching', request.url);
+  const accept = request.headers.get('accept') || '';
 
+  if (accept.indexOf('text/html') > -1) {
+    console.log('Loading offline fallback');
+    return caches
+      .match('/offline')
+      .then(cached => {
+        if (cached) {
+          console.log('Serving offline fallback');
+          return cached;
+        }
 
+        console.log('Offline fallback not found');
+        throw err;
+      });
+  }
 
+  throw err;
+});
 
 export default event => {
   const response = fetchIntercept(event.request);
 
   if (response) {
-    event.respondWith(response);
+    event.respondWith(
+      response.catch(offlineFallback(event.request))
+    );
   }
 };

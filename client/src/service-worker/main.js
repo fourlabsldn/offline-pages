@@ -1,7 +1,7 @@
 
 
 import install from './install';
-self.addEventListener('fetch', install);
+self.addEventListener('install', install);
 
 
 import activate from './activate';
