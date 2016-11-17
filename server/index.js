@@ -61,11 +61,11 @@ app.get('/projects', renderTemplate('projects'));
 app.get('/offline', renderTemplate('offline'));
 
 // API Routes
-app.get('/messages', routes['messages']);
-app.post('/new-message', routes['new-message']);
-app.get('/contacts', routes['contacts']);
-app.get('/contact-info', routes['contact-info']);
-app.get('/projects', routes['projects']);
+// app.get('/messages', routes['messages']);
+// app.post('/new-message', routes['new-message']);
+// app.get('/contacts', routes['contacts']);
+// app.get('/contact-info', routes['contact-info']);
+// app.get('/projects', routes['projects']);
 
 
 // =============================================================================

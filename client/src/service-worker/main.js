@@ -1,6 +1,7 @@
 /* globals */
 
 import toolbox from 'sw-toolbox';
+import htmlFallbackFor from './fetch/html-fallback';
 
 // Define files that must be available in cache at all times.
 // This will usually be the application shell.
@@ -11,15 +12,19 @@ const CRITICAL_FILES = [
 toolbox.precache(CRITICAL_FILES);
 
 
-toolbox.router.get(/.*/, toolbox.fastest, {
-  // Use a dedicated cache object
-  cache: {
-    name: 'general',
-    //  maxEntries: 10,
-    // Expire any entries that are older than one week seconds.
-    maxAgeSeconds: 60 * 60 * 24 * 7,
-  },
-});
+toolbox.router.get(
+  /.*/,
+  htmlFallbackFor(toolbox.fastest, '/offline'),
+  {
+    // Use a dedicated cache object
+    cache: {
+      name: 'general',
+      //  maxEntries: 10,
+      // Expire any entries that are older than one week seconds.
+      maxAgeSeconds: 60 * 60 * 24 * 7,
+    },
+  }
+);
 
 
 // By default, all requests that don't match our custom handler will use the
