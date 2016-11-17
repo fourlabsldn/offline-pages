@@ -32,12 +32,11 @@ export default curry((request, response) => {
   return caches
     .open(cacheNames.newest)
     .then(cache => {
-      console.log('Cache opened:', cache);
       return cache.put(request, responseClone);
     })
     .then(() => response)
     .catch(err => {
-      console.log('failed to save cache for', response.url, 'with error', err);
+      console.log('Failed to save cache for', response.url, 'with error', err);
       throw err;
     });
 });

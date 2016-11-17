@@ -36,7 +36,6 @@ let cleanupDone = false;
  */
 function fetchIntercept(request) {
   if (!cleanupDone) {
-    console.log('Doing cleanup because of', request.url);
     UserCache.cleanup();
     cleanupDone = true;
   }
@@ -54,16 +53,13 @@ const offlineFallback = curry((request, err) => {
   const accept = request.headers.get('accept') || '';
 
   if (accept.indexOf('text/html') > -1) {
-    console.log('Loading offline fallback');
     return caches
       .match('/offline')
       .then(cached => {
         if (cached) {
-          console.log('Serving offline fallback');
           return cached;
         }
 
-        console.log('Offline fallback not found');
         throw err;
       });
   }
