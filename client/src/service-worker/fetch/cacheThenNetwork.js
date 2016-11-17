@@ -16,7 +16,7 @@ export default request => {
       return UserCache.save(request, response);
     });
 
-  const fromCache = caches.match(request);
+  const fromCache = UserCache.retrieve(request);
 
   return fromCache
     .then(cached => {

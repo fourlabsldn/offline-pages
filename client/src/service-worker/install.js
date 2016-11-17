@@ -17,11 +17,5 @@ const CRITICAL_FILES = [
 
 export default event => {
   console.log('Installing');
-  const cacheNames = UserCache.names();
-
-  const cachingCriticalAssets = caches
-    .open(cacheNames.permanent)
-    .then(cache => cache.addAll(CRITICAL_FILES));
-
-  event.waitUntil(cachingCriticalAssets);
+  event.waitUntil(UserCache.load(CRITICAL_FILES));
 };
