@@ -2,10 +2,11 @@
 
 This demo aims at implementing a reusable Service Worker that can easily be configured and that will handle:
 
-### Caching of static resources in an *eventually fresh** manner
+### Caching of static resources in an *eventually fresh** manner ✓
 > *eventually fresh cache* means that when a resource is requested a cached version is served and at the same time a fresh version is fetched from the server and cached to be served next time.
 
-### Setup of cache fallback for failed requests of dynamic resources
+
+### Setup of cache fallback for failed requests of dynamic resources ✓
 
 Certain requests, such as retrieval of database content, must always serve the most up to date content, but if the user is offline serving cached content will suffice.
 
@@ -14,7 +15,7 @@ Certain requests, such as retrieval of database content, must always serve the m
 This includes making sure that:
 
 - Content is not cached for too long as old content is less relevant. ✓
-- Content that is too big is handled correctly (using [indexedDB](https://developer.mozilla.org/en/docs/Web/API/IndexedDB_API) and other storage options)
+- Content that is too big is handled correctly (using [indexedDB](https://developer.mozilla.org/en/docs/Web/API/IndexedDB_API) and other storage options) ✓
 
 ### Reliable submission of requests made offline
 
@@ -28,11 +29,11 @@ When the user does something offline he must know that his action was not comple
 
 This can be automated by setting a request header that will tell the service worker how to deal with the request. Somehing along the lines of `X-Offline-Notification`.
 
-### Serving an offline placeholder page when non-cached pages are requested offline.
+### Serving an offline placeholder page when non-cached pages are requested offline. ✓
 
 Making the website available offline means the user never gets a "Oh no, you are offline" message. A placeholder page with the same layout as the rest of the website should be served instead. This will also allow re-enable the person to navigate through cached pages.
 
-### Updating offline placeholder when needed
+### Updating offline placeholder when needed ✓
 
 Saying what to cache is not hard, but currently there is no set way of to dynamically tell the service worker when to renew content. This needs to be setup.
 
@@ -40,7 +41,7 @@ Saying what to cache is not hard, but currently there is no set way of to dynami
 
 Things are cached after they are requested at least once. To cache the most important pages of the website would require the user to visit these pages first. We don't want to count on that. The service worker must be able to download and cache crucial content before the user ever asks for it.
 
-### Not cache what shouldn't be cached
+### Not cache what shouldn't be cached ✓
 
 > With great power comes great responsibility
 
