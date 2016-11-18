@@ -16,10 +16,12 @@ toolbox.precache(CRITICAL_FILES);
   Serve our offline page when an html page is not available
   This must come last because is matching all of our domain's url
  */
-toolbox.router.any(
-  /trying/,
-  backgroundSync(toolbox.networkFirst)
+const newMessageHandler = backgroundSync(
+  toolbox.networkFirst,
+  _ => new Response('{ posted: true }')
 );
+
+toolbox.router.any(/new-message/, newMessageHandler);
 
 
 /*

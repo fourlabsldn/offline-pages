@@ -96,13 +96,23 @@ const schedule = (req) => {
 };
 
 
-// Provide a fallback page for when offline
-export default function backgroundSync(handler) {
+/**
+ * Store requests sent while offline and send them again
+ * once we have internet connection.
+ *
+ * @method backgroundSync
+ * @param  {Function} handler (Request -> Values -> Object) -> Promise<Response>
+ * @param  {Function} customResponseCreator - [optional]. (Request) -> Response
+ * @return {[type]} [description]
+ */
+export default function backgroundSync(handler, customResponseCreator) {
   return function (request, values, options) {
     return handler(request, values, options)
       .catch(async _ => {
         await schedule(request);
-        return new Response('Fake response');
+        return customResponseCreator
+          ? customResponseCreator(request)
+          : new Response('Request stored for later');
       });
   };
 }

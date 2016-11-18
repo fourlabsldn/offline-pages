@@ -14,9 +14,10 @@ function serialiseHeaders(h) {
  * @return {Object}
  */
 serialiser.serialise = req => {
-  const { method, body, mode, credentials, cache, redirect, referrer, integrity } = req;
+  const { url, method, body, mode, credentials, cache, redirect, referrer, integrity } = req;
 
   return {
+    url,
     method,
     body,
     mode,
