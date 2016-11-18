@@ -9,9 +9,8 @@ import backgroundSync from './fetch/background-sync';
 const OFFLINE_REDIRECTION = '/html/offline';
 const CRITICAL_FILES = [
   OFFLINE_REDIRECTION,
+  '/images/offline.png',
 ];
-
-self.registration.showNotification("I'm registered!");
 
 toolbox.precache(CRITICAL_FILES);
 

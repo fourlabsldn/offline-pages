@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import localForage from 'localforage';
 import requestSerialiser from './request-serialiser';
+import notify from './notify';
 
 const OUTBOX = 'flush-outbox';
 
@@ -71,7 +72,9 @@ async function flushRequestQueue(queueName) {
 
   await localForage.setItem(queueName, failed);
 
-  if (failed.length > 0) {
+  if (failed.length === 0) {
+    notify('Messages sent', 'Yeeehaa! All of your messages were sent to the server.');
+  } else {
     self.registration.sync.register(queueName);
   }
 
@@ -90,13 +93,6 @@ self.addEventListener('sync', async event => {
 });
 
 const schedule = (req) => {
-  if (Notification.permission === 'granted') {
-    // If it's okay let's create a notification
-    self.registration.showNotification('Notification scheduled', {
-      body: 'Your notification was scheduled and will be resent when you get back online',
-      icon: '../images/offline.png',
-    });
-  }
   // Request a backgroundSync event
   self.registration.sync.register(OUTBOX);
   return queueRequest(req, OUTBOX);
