@@ -32,9 +32,17 @@ const DEFAULT_CONFIG = {
     commonjs(),
     // Transpile our code to ES5
     babel({
+      runtimeHelpers: true,
       exclude: 'node_modules/**',
       babelrc: false,
-      plugins: ['lodash', 'transform-flow-strip-types'],
+      plugins: [
+        'lodash',
+        'transform-flow-strip-types',
+        ['transform-runtime', {
+          polyfill: false,
+          regenerator: true,
+        }],
+      ],
       presets: ['es2015-rollup', 'es2017'],
     }),
   ],

@@ -2,6 +2,7 @@
 
 import toolbox from 'sw-toolbox';
 import htmlFallbackFor from './fetch/html-fallback';
+import backgroundSync from './fetch/background-sync';
 
 // Define files that must be available in cache at all times.
 // This will usually be the application shell.
@@ -11,7 +12,20 @@ const CRITICAL_FILES = [
 
 toolbox.precache(CRITICAL_FILES);
 
+/*
+  Serve our offline page when an html page is not available
+  This must come last because is matching all of our domain's url
+ */
+toolbox.router.any(
+  /trying/,
+  backgroundSync(toolbox.networkFirst)
+);
 
+
+/*
+  Serve our offline page when an html page is not available
+  This must come last because is matching all of our domain's url
+ */
 toolbox.router.get(
   /.*/,
   htmlFallbackFor(toolbox.fastest, '/offline'),
@@ -26,11 +40,10 @@ toolbox.router.get(
   }
 );
 
-
-// By default, all requests that don't match our custom handler will use the
-// toolbox.networkFirst cache strategy, and their responses will be stored in
-// the default cache.
-toolbox.router.default = toolbox.networkFirst;
+// By default, all requests will request the resource from
+// both the cache and the network in parallel. Responding with
+// whichever returns first.
+toolbox.router.default = toolbox.fastest;
 
 // ensure our service worker takes control of the page as soon
 // as possible.

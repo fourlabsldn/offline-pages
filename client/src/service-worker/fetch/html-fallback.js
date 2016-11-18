@@ -1,6 +1,7 @@
-const isHtmlPageReques = req => {
+const sameDomainHtmlRequest = req => {
+  const url = new URL(req.url);
   const accept = req.headers.get('accept') || '';
-  return accept.includes('text/html');
+  return accept.includes('text/html') && url.origin === location.origin;
 };
 
 // Provide a fallback page for when offline
@@ -12,7 +13,7 @@ export default function htmlFallbackFor(handler, route) {
   return function (request, values, options) {
     return handler(request, values, options)
       .catch(err => {
-        if (!isHtmlPageReques(request)) {
+        if (!sameDomainHtmlRequest(request)) {
           throw err;
         }
 

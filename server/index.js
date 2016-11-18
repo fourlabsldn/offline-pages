@@ -73,7 +73,7 @@ app.get('/offline', renderTemplate('offline'));
 // =============================================================================
 
 const http = require('http').Server(app); // eslint-disable-line new-cap
-const PORT = 8080;
+const PORT = 3000;
 http.listen(PORT, () => {
   console.log(`
     Offline pages server listening on port ${PORT}
