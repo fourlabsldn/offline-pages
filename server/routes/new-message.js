@@ -8,5 +8,5 @@ module.exports = (req, res) => {
 
   req.app.locals.messages.push(newMessage);
 
-  res.json(req.app.locals.messages);
+  res.json({ posted: true });
 };

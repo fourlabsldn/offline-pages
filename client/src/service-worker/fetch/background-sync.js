@@ -48,7 +48,7 @@ async function queueRequest(req, queueName) {
   console.log('Request queued:', req.url);
 
   const queue = await localForage.getItem(queueName) || [];
-  const serialised = requestSerialiser.serialise(req);
+  const serialised = await requestSerialiser.serialise(req);
   const newQueue = queue.concat([serialised]);
   await localForage.setItem(queueName, newQueue);
 }
@@ -110,9 +110,13 @@ export default function backgroundSync(handler, customResponseCreator) {
     return handler(request, values, options)
       .catch(async _ => {
         await schedule(request);
-        return customResponseCreator
-          ? customResponseCreator(request)
-          : new Response('Request stored for later');
+        if (customResponseCreator) {
+          console.log('Returning custom response');
+          return customResponseCreator(request);
+        }
+
+        console.log('Returning standard response');
+        return new Response('{ "waiting": true }');
       });
   };
 }

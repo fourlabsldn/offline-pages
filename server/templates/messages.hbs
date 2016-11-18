@@ -38,10 +38,15 @@
   function postMessage() {
     const content = messageInput.value;
     fetch('api/new-message', { method: 'POST', body: JSON.stringify({ content }), headers: {'Content-Type': 'application/json'} })
-    .then(_ => setInfo('Message posted successfully', 'success'))
+    .then(res => res.json())
+    .then(res => {
+      res.waiting
+        ? setInfo('Your message was saved and will be posted when you are back online.', 'info')
+        : setInfo('Message posted successfully', 'success');
+    })
     .then(_ => (messageInput.value = ''))
     .then(loadMessages)
-    .catch(_ => setInfo('Your message was saved and will be posted when you are back online.', 'info'))
+    .catch(_ => setInfo('Uh, this should have never happened.', 'danger'))
   }
 
   function loadMessages() {

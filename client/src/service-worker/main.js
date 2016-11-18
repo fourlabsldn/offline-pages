@@ -18,7 +18,7 @@ toolbox.precache(CRITICAL_FILES);
  */
 const newMessageHandler = backgroundSync(
   toolbox.networkFirst,
-  _ => new Response('{ posted: true }')
+  _ => new Response('{ "waiting": true }')
 );
 
 toolbox.router.post(/\/api\//, newMessageHandler);
@@ -30,7 +30,7 @@ toolbox.router.post(/\/api\//, newMessageHandler);
  */
 toolbox.router.get(
   /.*/,
-  htmlFallbackFor(toolbox.fastest, '/offline'),
+  htmlFallbackFor(toolbox.networkFirst, '/offline'),
   {
     // Use a dedicated cache object
     cache: {

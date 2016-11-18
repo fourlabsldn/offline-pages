@@ -11,10 +11,12 @@ function serialiseHeaders(h) {
 /**
  * @method serialise
  * @param  {Request} req
- * @return {Object}
+ * @return {Promise<Object>}
  */
-serialiser.serialise = req => {
-  const { url, method, body, mode, credentials, cache, redirect, referrer, integrity } = req;
+serialiser.serialise = async primaryReq => {
+  const req = primaryReq.clone();
+  const body = await req.text();
+  const { url, method, mode, credentials, cache, redirect, referrer, integrity } = req;
 
   return {
     url,
