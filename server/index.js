@@ -33,6 +33,9 @@ app.set('views', path.join(__dirname, 'templates'));
 //    ROUTES SETUP
 // =============================================================================
 
+const LATENCY = 3000;
+
+
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -53,19 +56,23 @@ const renderTemplate = curry((template, req, res) => {
   res.render(template);
 });
 
+// Add some latency to simulate poor connectivity.
+app.use('*', (req, res, next) => {
+  setTimeout(next, LATENCY);
+});
+
 // Pages
-app.get('/', (req, res) => res.redirect('/home'));
-app.get('/home', renderTemplate('home'));
-app.get('/contacts', renderTemplate('contacts'));
-app.get('/projects', renderTemplate('projects'));
-app.get('/messages', renderTemplate('messages'));
-app.get('/offline', renderTemplate('offline'));
+app.get('/', (req, res) => res.redirect('/html/home'));
+app.get('/html/home', renderTemplate('home'));
+app.get('/html/contacts', renderTemplate('contacts'));
+app.get('/html/projects', renderTemplate('projects'));
+app.get('/html/messages', renderTemplate('messages'));
+app.get('/html/offline', renderTemplate('offline'));
 
 // API Routes
 app.get('/api/messages', routes['messages']);
 app.post('/api/new-message', routes['new-message']);
 app.get('/api/contacts', routes['contacts']);
-app.get('/api/contact-info', routes['contact-info']);
 app.get('/api/projects', routes['projects']);
 
 

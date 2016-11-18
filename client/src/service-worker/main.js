@@ -6,8 +6,9 @@ import backgroundSync from './fetch/background-sync';
 
 // Define files that must be available in cache at all times.
 // This will usually be the application shell.
+const OFFLINE_REDIRECTION = '/html/offline';
 const CRITICAL_FILES = [
-  '/offline',
+  OFFLINE_REDIRECTION,
 ];
 
 toolbox.precache(CRITICAL_FILES);
@@ -21,7 +22,20 @@ const newMessageHandler = backgroundSync(
   _ => new Response('{ "waiting": true }')
 );
 
-toolbox.router.post(/\/api\//, newMessageHandler);
+toolbox.router.post(
+  /\/api\//,
+  newMessageHandler,
+  {
+    // Use a dedicated cache object
+    cache: {
+      name: 'api',
+      networkTimeoutSeconds: 1,
+      //  maxEntries: 10,
+      // Expire any entries that are older than one week seconds.
+      maxAgeSeconds: 60 * 60 * 24 * 7,
+    },
+  }
+);
 
 
 /*
@@ -29,8 +43,8 @@ toolbox.router.post(/\/api\//, newMessageHandler);
   This must come last because is matching all of our domain's url
  */
 toolbox.router.get(
-  /.*/,
-  htmlFallbackFor(toolbox.networkFirst, '/offline'),
+  /html/,
+  htmlFallbackFor(toolbox.fastest, OFFLINE_REDIRECTION),
   {
     // Use a dedicated cache object
     cache: {
@@ -45,7 +59,7 @@ toolbox.router.get(
 // By default, all requests will request the resource from
 // both the cache and the network in parallel. Responding with
 // whichever returns first.
-toolbox.router.default = toolbox.fastest;
+toolbox.router.default = toolbox.networkFirst;
 
 // ensure our service worker takes control of the page as soon
 // as possible.

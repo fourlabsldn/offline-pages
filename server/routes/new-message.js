@@ -1,7 +1,7 @@
 /* eslint-disable camelcase, no-param-reassign */
 const fs = require('fs');
 const path = require('path');
-const msgFileAddr = path.join(__dirname, 'message-record.json');
+const msgFileAddr = path.join(__dirname, 'db-messages.json');
 
 function loadMessages() {
   const msgFileContent = fs.readFileSync(msgFileAddr);
