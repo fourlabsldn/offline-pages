@@ -1,3 +1,5 @@
+const serialiser = {};
+
 function serialiseHeaders(h) {
   return [...h.entries()]
     .reduce((out, [key, value]) =>
@@ -6,7 +8,12 @@ function serialiseHeaders(h) {
     );
 }
 
-export default req => {
+/**
+ * @method serialise
+ * @param  {Request} req
+ * @return {Object}
+ */
+serialiser.serialise = req => {
   const { method, body, mode, credentials, cache, redirect, referrer, integrity } = req;
 
   return {
@@ -21,3 +28,15 @@ export default req => {
     headers: serialiseHeaders(req.headers),
   };
 };
+
+
+/**
+ * @method deserialise
+ * @param  {Object} req
+ * @return {Request}
+ */
+serialiser.deserialise = serialised => {
+  return new Request(serialised.url, serialised);
+};
+
+export default serialiser;

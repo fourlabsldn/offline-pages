@@ -1,6 +1,6 @@
-import { map, defaultTo } from 'lodash/fp';
+/* eslint-disable no-param-reassign */
 import localForage from 'localforage';
-import serialiseRequest from './serialise-request';
+import requestSerialiser from './request-serialiser';
 
 const OUTBOX = 'flush-outbox';
 
@@ -33,7 +33,7 @@ function fulfilAll(promiseArray) {
       .map(p => {
         p.resolved = false;
         p.rejected = false;
-        return p
+        return p;
       })
       .forEach(p => {
         p.then(_ => (p.resolved = true))
@@ -43,17 +43,18 @@ function fulfilAll(promiseArray) {
   });
 }
 
-
-function queueRequest(req, queueName) {
+// Adds a request to a request queue.
+async function queueRequest(req, queueName) {
   console.log('Request queued:', req.url);
-  const serialised = serialiseRequest(req);
 
-  return localForage.getItem(queueName)
-    .then(queue => queue || [])
-    .then((queue = []) => queue.concat([serialised]))
-    .then(newQueue => localForage.setItem(queueName, newQueue));
+  const queue = await localForage.getItem(queueName) || [];
+  const serialised = requestSerialiser.serialise(req);
+  const newQueue = queue.concat([serialised]);
+  await localForage.setItem(queueName, newQueue);
 }
 
+// Sends requests in the queue and schedules a new
+// flush event if there are failures in sending.
 async function flushRequestQueue(queueName) {
   console.log('Flushing', queueName);
 
@@ -61,7 +62,7 @@ async function flushRequestQueue(queueName) {
   const queue = await localForage.getItem(queueName) || [];
   console.log('Queue:', queue);
   const fulfilled = await fulfilAll(
-    queue.map(r => fetch(new Request(r)))
+    queue.map(r => fetch(requestSerialiser.deserialise(r)))
   );
 
   const failed = fulfilled
@@ -99,8 +100,8 @@ const schedule = (req) => {
 export default function backgroundSync(handler) {
   return function (request, values, options) {
     return handler(request, values, options)
-      .catch(_ => {
-        schedule(request);
+      .catch(async _ => {
+        await schedule(request);
         return new Response('Fake response');
       });
   };
