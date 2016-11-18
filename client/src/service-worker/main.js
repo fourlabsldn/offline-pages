@@ -21,7 +21,7 @@ const newMessageHandler = backgroundSync(
   _ => new Response('{ posted: true }')
 );
 
-toolbox.router.any(/new-message/, newMessageHandler);
+toolbox.router.post(/\/api\//, newMessageHandler);
 
 
 /*

@@ -1,0 +1,57 @@
+<div class="jumbotron">
+  <h1>Offline Messages</h1>
+  <p class="lead">
+    You can just send a message without worrying about your
+    connection status. If you are offline it will just be sent whenever
+    you go online.
+  </p>
+</div>
+
+<div style="display: flex">
+  <input class="message-input form-control" type="text" name="Message" placeholder="Type a message" />
+  <button type="button" class="message-send btn btn-primary" style="margin-left: .5em;">Send</button>
+  <button type="button" class="messages-reload btn btn-info" style="margin-left: .5em;">Reload messages</button>
+</div>
+
+<div class="message-input-info" style="margin: .5em 0">
+
+</div>
+
+
+<ul class="messages list-group">
+
+</ul>
+
+<script type="text/javascript">
+  const sendBtn = document.querySelector('.message-send');
+  const reloadBtn = document.querySelector('.messages-reload');
+  const messageInput = document.querySelector('.message-input');
+  const messsages = document.querySelector('.messages');
+  const messageInfo = document.querySelector('.message-input-info');
+
+  function setInfo(msg, level) {
+    messageInfo.innerHTML = msg;
+    messageInfo.className = 'message-input-info alert alert-' + level;
+    messageInfo.style.opacity = 1;
+  }
+
+  function postMessage() {
+    const content = messageInput.value;
+    fetch('api/new-message', { method: 'POST', body: JSON.stringify({ content }) })
+    .then(_ => setInfo('Message posted successfully', 'success'))
+    .catch(_ => setInfo('Your message was saved and will be posted when you are back online.', 'info'))
+  }
+
+  function loadMessages() {
+    fetch('api/messages')
+      .then(m => m.json())
+      .then(({ messages }) => messages.map(m => `<li class="list-group-item">${m}</li>`))
+      .then(messages => (messages.innerHTML = messages.join('\n')))
+      .catch(_ => setInfo('Ops, you are offline. Let\'s try again later', 'danger'))
+  }
+
+  loadMessages();
+  sendBtn.addEventListener('click', postMessage);
+  reloadBtn.addEventListener('click', loadMessages);
+
+</script>

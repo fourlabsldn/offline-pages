@@ -58,6 +58,7 @@ app.get('/', (req, res) => res.redirect('/home'));
 app.get('/home', renderTemplate('home'));
 app.get('/contacts', renderTemplate('contacts'));
 app.get('/projects', renderTemplate('projects'));
+app.get('/messages', renderTemplate('messages'));
 app.get('/offline', renderTemplate('offline'));
 
 // API Routes
