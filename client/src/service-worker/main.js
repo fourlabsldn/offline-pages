@@ -11,6 +11,8 @@ const CRITICAL_FILES = [
   OFFLINE_REDIRECTION,
 ];
 
+self.registration.showNotification("I'm registered!");
+
 toolbox.precache(CRITICAL_FILES);
 
 /*

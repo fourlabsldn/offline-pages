@@ -33,7 +33,7 @@ app.set('views', path.join(__dirname, 'templates'));
 //    ROUTES SETUP
 // =============================================================================
 
-const LATENCY = 3000;
+const LATENCY = 0;
 
 
 app.use(bodyParser.json()); // for parsing application/json

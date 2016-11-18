@@ -90,6 +90,13 @@ self.addEventListener('sync', async event => {
 });
 
 const schedule = (req) => {
+  if (Notification.permission === 'granted') {
+    // If it's okay let's create a notification
+    self.registration.showNotification('Notification scheduled', {
+      body: 'Your notification was scheduled and will be resent when you get back online',
+      icon: '../images/offline.png',
+    });
+  }
   // Request a backgroundSync event
   self.registration.sync.register(OUTBOX);
   return queueRequest(req, OUTBOX);

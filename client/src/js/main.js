@@ -15,3 +15,9 @@ if (window.navigator && 'serviceWorker' in window.navigator) {
       console.log('ServiceWorker registration failed: ', err);
     });
 }
+
+// Our service worker will use notifications, so we have to make sure to
+// ask for permission if it still hasn't been granted.
+if (Notification.permission !== 'denied') {
+  Notification.requestPermission();
+}
