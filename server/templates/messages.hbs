@@ -26,7 +26,7 @@
   const sendBtn = document.querySelector('.message-send');
   const reloadBtn = document.querySelector('.messages-reload');
   const messageInput = document.querySelector('.message-input');
-  const messsages = document.querySelector('.messages');
+  const messsagesContainer = document.querySelector('.messages');
   const messageInfo = document.querySelector('.message-input-info');
 
   function setInfo(msg, level) {
@@ -37,16 +37,18 @@
 
   function postMessage() {
     const content = messageInput.value;
-    fetch('api/new-message', { method: 'POST', body: JSON.stringify({ content }) })
+    fetch('api/new-message', { method: 'POST', body: JSON.stringify({ content }), headers: {'Content-Type': 'application/json'} })
     .then(_ => setInfo('Message posted successfully', 'success'))
+    .then(_ => (messageInput.value = ''))
+    .then(loadMessages)
     .catch(_ => setInfo('Your message was saved and will be posted when you are back online.', 'info'))
   }
 
   function loadMessages() {
     fetch('api/messages')
       .then(m => m.json())
-      .then(({ messages }) => messages.map(m => `<li class="list-group-item">${m}</li>`))
-      .then(messages => (messages.innerHTML = messages.join('\n')))
+      .then(messages => messages.map(m => `<li class="list-group-item">${m}</li>`))
+      .then(messages => (messsagesContainer.innerHTML = messages.join('\n')))
       .catch(_ => setInfo('Ops, you are offline. Let\'s try again later', 'danger'))
   }
 

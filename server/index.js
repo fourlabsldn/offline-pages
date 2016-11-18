@@ -62,11 +62,11 @@ app.get('/messages', renderTemplate('messages'));
 app.get('/offline', renderTemplate('offline'));
 
 // API Routes
-// app.get('/messages', routes['messages']);
-// app.post('/new-message', routes['new-message']);
-// app.get('/contacts', routes['contacts']);
-// app.get('/contact-info', routes['contact-info']);
-// app.get('/projects', routes['projects']);
+app.get('/api/messages', routes['messages']);
+app.post('/api/new-message', routes['new-message']);
+app.get('/api/contacts', routes['contacts']);
+app.get('/api/contact-info', routes['contact-info']);
+app.get('/api/projects', routes['projects']);
 
 
 // =============================================================================

@@ -3,9 +3,8 @@
 module.exports = (req, res) => {
   req.app.locals.messages = req.app.locals.messages || [];
 
-  const newMessage = {
-    content: req.body.content,
-  };
+  console.log('Request body', req.body);
+  const newMessage = req.body.content;
 
   req.app.locals.messages.push(newMessage);
 
