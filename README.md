@@ -50,3 +50,11 @@ Things are cached after they are requested at least once. To cache the most impo
 The last thing we want is to have synchronisation problems because the website content just doesn't update.
 
 Third party resources caching should  probably be left for the Browser to do.
+
+## Dynamic page generation
+
+### Problems
+
+It is just not straight forward at all to render your server-precompiled code in the client-side.
+  - The use of partials is very fragile
+  - You must make sure to use the exact same helpers in the server and client side
