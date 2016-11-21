@@ -34,19 +34,19 @@ app.set('views', path.join(__dirname, 'templates'));
 
 // Expose precompiled templates in res.locals.templates
 function exposeTemplates(req, res, next) {
-  const hbsExtRegex = new RegExp(`${hbs.extname}$`);
-
-  hbs.getTemplates(path.join(__dirname, 'templates/precompile'), {
+  const templatesSrc = path.join(__dirname, 'templates/');
+  hbs.getTemplates(templatesSrc, {
     precompiled: true,
     cache: true,
   })
-  .then(templates => {
+  .then(_ => {
     // Template names without extensions as object keys
     res.locals.templates = flow( // eslint-disable-line no-param-reassign
       toPairs,
-      map(([key, val]) => [key.replace(hbsExtRegex, ''), val]),
+      map(([key, val]) => [key.replace(hbs.extname, ''), val]),
+      map(([key, val]) => [key.replace(templatesSrc, ''), val]),
       fromPairs
-    )(templates);
+    )(hbs.precompiled);
     next();
   })
   .catch(next);
@@ -56,7 +56,7 @@ function exposeTemplates(req, res, next) {
 //    ROUTES SETUP
 // =============================================================================
 
-const LATENCY = 3000;
+const LATENCY = 0;
 
 
 app.use(bodyParser.json()); // for parsing application/json
@@ -91,6 +91,7 @@ app.get('/html/home', renderTemplate('home'));
 app.get('/html/contacts', renderTemplate('contacts'));
 app.get('/html/projects', renderTemplate('projects'));
 app.get('/html/messages', renderTemplate('messages'));
+app.get('/html/contact-info', renderTemplate('contact-info'));
 
 // API Routes
 app.get('/api/messages', routes['messages']);

@@ -1,0 +1,21 @@
+<div class="container">
+
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<script type="text/javascript">
+  requirejs.config({
+    baseUrl: '/javascript/',
+    paths: {
+      handlebars: 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars',
+    }
+  });
+</script>
+<script type="text/javascript">
+
+    require(['/api/precompiled/contact-info', 'handlebars'], (template, handlebars) => {
+      const container = document.querySelector('.container');
+      const compile = handlebars.template(template);
+      container.innerHTML = compile({ name: 'Marcelo' })
+    });
+</script>
