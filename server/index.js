@@ -37,7 +37,6 @@ function exposeTemplates(req, res, next) {
   const templatesSrc = path.join(__dirname, 'templates/');
   hbs.getTemplates(templatesSrc, {
     precompiled: true,
-    cache: true,
   })
   .then(_ => {
     // Template names without extensions as object keys

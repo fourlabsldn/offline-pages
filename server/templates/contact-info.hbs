@@ -1,4 +1,4 @@
-<div class="container">
+<div class="contact-container">
 
 </div>
 
@@ -8,13 +8,15 @@
     baseUrl: '/javascript/',
     paths: {
       handlebars: 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars',
+      Swag: '/js/customHelpers',
     }
   });
 </script>
 <script type="text/javascript">
 
-    require(['/api/precompiled/contact-info', 'handlebars'], (template, handlebars) => {
-      const container = document.querySelector('.container');
+    require(['/api/precompiled/contact-info', 'handlebars', 'Swag'], (template, handlebars, Swag) => {
+      const container = document.querySelector('.contact-container');
+      Swag.registerHelpers(handlebars);
       const compile = handlebars.template(template);
       container.innerHTML = compile({ name: 'Marcelo' })
     });
