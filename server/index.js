@@ -7,7 +7,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const requireDir = require('require-dir-all');
 const routes = requireDir('./routes');
-const { curry } = require('lodash/fp');
+const { curry, toPairs, map, fromPairs, flow } = require('lodash/fp');
 
 // =============================================================================
 //   TEMPLATE ENGINE SETUP
@@ -17,17 +17,40 @@ const { curry } = require('lodash/fp');
 const helpers = {};
 Swag.registerHelpers({ registerHelper(hn, hf) { helpers[hn] = hf; } });
 
-// Use Handlebars
-app.engine('.hbs', exphbs({
+const hbs = exphbs.create({
   extname: '.hbs',
   defaultLayout: 'main',
   helpers,
   layoutsDir: path.join(__dirname, 'templates/layouts'),
   partialsDir: path.join(__dirname, 'templates/partials'),
-}));
+});
 
+// === Middleware ===
+
+// Use Handlebars
+app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'templates'));
+
+// Expose precompiled templates in res.locals.templates
+function exposeTemplates(req, res, next) {
+  const hbsExtRegex = new RegExp(`${hbs.extname}$`);
+
+  hbs.getTemplates(path.join(__dirname, 'templates/precompile'), {
+    precompiled: true,
+    cache: true,
+  })
+  .then(templates => {
+    // Template names without extensions as object keys
+    res.locals.templates = flow( // eslint-disable-line no-param-reassign
+      toPairs,
+      map(([key, val]) => [key.replace(hbsExtRegex, ''), val]),
+      fromPairs
+    )(templates);
+    next();
+  })
+  .catch(next);
+}
 
 // =============================================================================
 //    ROUTES SETUP
@@ -63,17 +86,19 @@ app.use('*', (req, res, next) => {
 
 // Pages
 app.get('/', (req, res) => res.redirect('/html/home'));
+app.get('/html/offline', renderTemplate('offline'));
 app.get('/html/home', renderTemplate('home'));
 app.get('/html/contacts', renderTemplate('contacts'));
 app.get('/html/projects', renderTemplate('projects'));
 app.get('/html/messages', renderTemplate('messages'));
-app.get('/html/offline', renderTemplate('offline'));
 
 // API Routes
 app.get('/api/messages', routes['messages']);
 app.post('/api/new-message', routes['new-message']);
 app.get('/api/contacts', routes['contacts']);
 app.get('/api/projects', routes['projects']);
+// Returns a precompiled template
+app.get('/api/precompiled/:templateName', exposeTemplates, routes['precompiled']);
 
 
 // =============================================================================

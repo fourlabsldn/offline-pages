@@ -2,26 +2,32 @@
     "contacts": [{
         "name": "John Malkovitch",
         "image": "/images/user-1.png",
-        "id": "xxx-1"
+        "id": "xxx-1",
+        "info": "Proin vitae neque quis lorem viverra ullamcorper. Sed porttitor scelerisque finibus. Nulla ut varius libero. In ut lectus id turpis interdum venenatis. Quisque pulvinar sodales justo, pellentesque sagittis tortor ultricies eget. Fusce sit amet gravida velit. Nam sit amet mattis erat, accumsan rhoncus mi. Pellentesque magna turpis, gravida vitae magna commodo, scelerisque tempor elit. Integer posuere fermentum tincidunt."
     }, {
         "name": "Karl Marx",
         "image": "/images/user-2.png",
-        "id": "xxx-2"
+        "id": "xxx-2",
+        "info": "Vivamus suscipit commodo neque ut placerat. In id tempus nisi. Proin pulvinar turpis ac lectus congue, et lobortis nulla accumsan. Vestibulum blandit lacus quam, quis tempor massa vestibulum et. In maximus sed lacus nec vehicula. Integer tristique aliquam sem, non malesuada eros commodo eget. Praesent convallis, tellus ut euismod convallis, libero ligula maximus massa, venenatis venenatis elit lorem sit amet neque."
     }, {
         "name": "Friedrich Engels",
         "image": "/images/user-3.png",
-        "id": "xxx-3"
+        "id": "xxx-3",
+        "info": "Maecenas non tortor ligula. Aenean ullamcorper nibh et dui pellentesque, in commodo ex condimentum. Nulla facilisi. Vestibulum ultricies in nisl vel imperdiet. Integer congue ex diam, at egestas nunc tempus scelerisque. Aenean a mattis odio. Integer consectetur purus ante, in tristique ligula eleifend et. Vivamus efficitur nec nunc id placerat. Integer ullamcorper nunc vitae rutrum finibus. Nulla at elementum sem. Etiam lobortis eleifend sagittis. Curabitur vel nulla id nunc tincidunt interdum. Integer et turpis hendrerit, pulvinar lacus in, tempus lectus. Quisque quis pellentesque ipsum."
     }, {
         "name": "Adam Smith",
         "image": "/images/user-4.png",
-        "id": "xxx-4"
+        "id": "xxx-4",
+        "info": "Ut maximus interdum nunc, ac pretium orci hendrerit eu. Vivamus dui tellus, mollis ut elit sit amet, consectetur tempus augue. Vivamus vel feugiat augue. Curabitur tempor consequat ex vitae tincidunt. Aenean vel gravida orci, dictum rhoncus ligula. Aenean consequat purus vel semper auctor. Proin et magna sit amet lorem auctor sagittis. Aenean posuere sollicitudin ligula et pellentesque. Suspendisse in pulvinar mi, at aliquam quam. Integer quis pellentesque erat. Nulla facilisi. Nulla facilisi. Vivamus quis elit id odio mollis tristique sed eget erat. In vel nunc in nibh commodo sagittis. Pellentesque vitae nisi eleifend, commodo nibh sit amet, hendrerit nisi."
     }, {
         "name": "William Wallace",
         "image": "/images/user-5.png",
-        "id": "xxx-5"
+        "id": "xxx-5",
+        "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae pulvinar lectus, in iaculis felis. Nam fringilla tellus tincidunt nisl maximus, eu condimentum est ullamcorper. Aenean ultricies, enim eget finibus tincidunt, lorem urna mattis lacus, eget lacinia nisi mauris ac justo. Quisque scelerisque velit sed mauris varius, at tincidunt purus gravida. Vestibulum ut dui mattis, fringilla augue nec, sollicitudin turpis. Phasellus ac fringilla ligula."
     }, {
         "name": "Leo Tolstoy",
         "image": "/images/user-6.png",
-        "id": "xxx-6"
+        "id": "xxx-6",
+        "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris orci mauris, consequat eu lacinia varius, faucibus sit amet sapien. Donec viverra diam massa, at scelerisque turpis egestas in. Donec hendrerit et nisi sit amet ullamcorper. Ut viverra purus in erat faucibus, sit amet posuere ipsum iaculis. Pellentesque eu porta libero. Mauris viverra arcu sed sem luctus volutpat. Suspendisse lobortis aliquet risus, quis eleifend dolor iaculis sed. Nunc fermentum nisi eget tincidunt rutrum."
     }]
 }
