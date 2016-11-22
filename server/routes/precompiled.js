@@ -1,7 +1,7 @@
 module.exports = (req, res) => {
-  const partialName = req.params.templateName;
+  const { templateName } = req.params;
 
-  res.locals.templates[`precompile/${partialName}`]
+  res.locals.templates[templateName]
     .then(precompiled => {
       res.setHeader('Content-Type', 'application/javascript');
       res.send(`
@@ -15,7 +15,7 @@ module.exports = (req, res) => {
           }
       }(this, function (handlebars) {
           var partial = ${precompiled};
-          handlebars.partials['${partialName}'] = partial;
+          handlebars.partials['${templateName}'] = partial;
           return partial;
       }));`);
     })

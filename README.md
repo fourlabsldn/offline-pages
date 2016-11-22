@@ -67,4 +67,4 @@ A possible URL scheme may look like this:
 
 ### Problems
 
-  - We **must** use the same Handlebars helpers file in the server and client.
+  - We **must** use the same Handlebars helpers in the server and client. We cannot forget that the client version of the file must be transpiled.

@@ -1,23 +1,20 @@
-<div class="contact-container">
+<div class="card card-inverse card-danger" style="max-width: 20rem;">
+  <div class="card-block">
+      <h4 class="card-title">
+        {{#is data.name "marcelo"}}
+          {{data.name}}
+        {{else}}
+          Not marcelo
+        {{/is}}
+      </h4>
 
+      <p class="card-text">
+        <img src="{{data.image}}" alt="" />
+        {{data.info}}
+      </p>
+
+      <!-- Links -->
+      <a href="#" class="card-link">Send message</a>
+      <a href="#" class="card-link">See user projects</a>
+  </div>
 </div>
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
-<script type="text/javascript">
-  requirejs.config({
-    baseUrl: '/',
-    paths: {
-      handlebars: 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars',
-      Swag: '/js/customHelpers',
-    }
-  });
-</script>
-<script type="text/javascript">
-
-    require(['/api/precompiled/contact-info', 'handlebars', 'Swag'], (template, handlebars, Swag) => {
-      const container = document.querySelector('.contact-container');
-      Swag.registerHelpers(handlebars);
-      const compile = handlebars.template(template);
-      container.innerHTML = compile({ name: 'Marcelo' })
-    });
-</script>

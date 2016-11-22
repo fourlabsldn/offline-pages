@@ -1,0 +1,32 @@
+<div class="contact-container">
+
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<script type="text/javascript">
+  requirejs.config({
+    baseUrl: '/',
+    paths: {
+      handlebars: 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars',
+    }
+  });
+</script>
+<script type="text/javascript">
+
+    require([
+      '/api/precompiled/layouts.main',
+      '/api/precompiled/contact-info',
+      'handlebars',
+      '/api/template-helpers/helpers-transpiled.js'
+    ],
+    (layout, template, handlebars, helpers) => {
+      const container = document.querySelector('.contact-container');
+      handlebars.registerHelper(helpers);
+
+      const compileTemplate = handlebars.template(template);
+      const pageTemplate = compileTemplate({ name: 'Marcelo' });
+
+      const compileLayout = handlebars.template(layout);
+      container.innerHTML = compileLayout({ body: pageTemplate });
+    });
+</script>

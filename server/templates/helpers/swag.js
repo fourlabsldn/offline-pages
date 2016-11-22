@@ -1,18 +1,14 @@
 /*
+  The library file was creating transpilation problems. This one is better.
+*/
+
+
+/*
     Swag v0.6.1
     Copyright 2012 Elving Rodriguez
     Available under MIT license
 */
-
-(function (root, factory) {
-    if (typeof define === "function" && define.amd) {
-        define([], factory);
-    } else if (typeof exports === "object") {
-        module.exports = factory();
-    } else {
-        root.returnExports = factory();
-    }
-}(this, function() {
+module.exports = (function() {
   var Dates, HTML, Swag, Utils,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -45,19 +41,8 @@
 
   Swag.registerHelpers = function(localHandlebars) {
     var helper, name, _ref, _results;
-    if (localHandlebars) {
-      Swag.Handlebars = localHandlebars;
-    } else {
-      if (typeof window !== "undefined" && window !== null) {
-        if (window.Ember != null) {
-          Swag.Handlebars = Ember.Handlebars;
-        } else {
-          Swag.Handlebars = window.Handlebars;
-        }
-      } else if (typeof module !== "undefined" && module !== null) {
-        Swag.Handlebars = require('handlebars');
-      }
-    }
+    Swag.Handlebars = localHandlebars;
+
     Swag.registerHelper = function(name, helper) {
       if ((typeof window !== "undefined" && window !== null) && window.Ember) {
         return Swag.Handlebars.helper(name, helper);
@@ -844,39 +829,5 @@
     return value || defaultValue;
   }, 'safe:string|number', 'string|number');
 
-  if (typeof Ember === "undefined" || Ember === null) {
-    Swag.addHelper('partial', function(name, data, template) {
-      var path;
-      path = Swag.Config.partialsPath + name;
-      if (Swag.Handlebars.partials[name] == null) {
-        if (!Utils.isUndefined(template)) {
-          if (Utils.isString(template)) {
-            template = Swag.Handlebars.compile(template);
-          }
-          Swag.Handlebars.registerPartial(name, template);
-        } else if ((typeof define !== "undefined" && define !== null) && (Utils.isFunc(define)) && define.amd) {
-          if (!Swag.Config.precompiledTemplates) {
-            path = "!text" + path;
-          }
-          require([path], function(template) {
-            if (Utils.isString(template)) {
-              template = Swag.Handlebars.compile(template);
-            }
-            return Swag.Handlebars.registerPartial(name, template);
-          });
-        } else if (typeof require !== "undefined" && require !== null) {
-          template = require(path);
-          if (Utils.isString(template)) {
-            template = Swag.Handlebars.compile(template);
-          }
-          Swag.Handlebars.registerPartial(name, template);
-        } else {
-          Utils.err('{{partial}} no amd or commonjs module support found.');
-        }
-      }
-      return Utils.safeString(Swag.Handlebars.partials[name](data));
-    }, 'string');
-  }
-
   return Swag;
-}));
+}());

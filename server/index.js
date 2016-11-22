@@ -2,20 +2,16 @@
 const express = require('express');
 const app = express();
 const exphbs = require('express-handlebars');
-const Swag = require('swag');
 const path = require('path');
 const bodyParser = require('body-parser');
 const requireDir = require('require-dir-all');
 const routes = requireDir('./routes');
+const helpers = require('./templates/helpers/helpers');
 const { curry, toPairs, map, fromPairs, flow } = require('lodash/fp');
 
 // =============================================================================
 //   TEMPLATE ENGINE SETUP
 // =============================================================================
-
-// prepare Swag handlebars helpers
-const helpers = {};
-Swag.registerHelpers({ registerHelper(hn, hf) { helpers[hn] = hf; } });
 
 const hbs = exphbs.create({
   extname: '.hbs',
@@ -35,15 +31,16 @@ app.set('views', path.join(__dirname, 'templates'));
 // Expose precompiled templates in res.locals.templates
 function exposeTemplates(req, res, next) {
   const templatesSrc = path.join(__dirname, 'templates/');
-  hbs.getTemplates(templatesSrc, {
-    precompiled: true,
-  })
+
+  hbs.getTemplates(templatesSrc, { precompiled: true })
   .then(_ => {
     // Template names without extensions as object keys
     res.locals.templates = flow( // eslint-disable-line no-param-reassign
       toPairs,
-      map(([key, val]) => [key.replace(hbs.extname, ''), val]),
-      map(([key, val]) => [key.replace(templatesSrc, ''), val]),
+      map(([key, val]) => [key.replace(hbs.extname, ''), val]), // remove extension
+      map(([key, val]) => [key.replace(templatesSrc, ''), val]), // remove filesystem path
+      // Replace slashes with dots so we can reference files withing folders form the client.
+      map(([key, val]) => [key.replace('/', '.'), val]),
       fromPairs
     )(hbs.precompiled);
     next();
@@ -71,8 +68,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', express.static(path.join(__dirname, '../client/build')));
-
 const renderTemplate = curry((template, req, res) => {
   res.locals.title = template; // eslint-disable-line no-param-reassign
   res.render(template);
@@ -83,7 +78,14 @@ app.use('*', (req, res, next) => {
   setTimeout(next, LATENCY);
 });
 
+// ==================
+// Static content
+// ==================
+app.use('/static', express.static(path.join(__dirname, '../client/build')));
+
+// ==================
 // Pages
+// ==================
 app.get('/', (req, res) => res.redirect('/html/home'));
 app.get('/html/offline', renderTemplate('offline'));
 app.get('/html/home', renderTemplate('home'));
@@ -91,14 +93,22 @@ app.get('/html/contacts', renderTemplate('contacts'));
 app.get('/html/projects', renderTemplate('projects'));
 app.get('/html/messages', renderTemplate('messages'));
 app.get('/html/contact-info', renderTemplate('contact-info'));
+app.get('/html/contact-info-shell', renderTemplate('contact-info-shell'));
 
+// ==================
 // API Routes
+// ==================
 app.get('/api/messages', routes['messages']);
 app.post('/api/new-message', routes['new-message']);
 app.get('/api/contacts', routes['contacts']);
 app.get('/api/projects', routes['projects']);
 // Returns a precompiled template
 app.get('/api/precompiled/:templateName', exposeTemplates, routes['precompiled']);
+// Handlebars helpers
+app.use(
+  '/api/template-helpers',
+  express.static(path.join(__dirname, '/templates/helpers'))
+);
 
 
 // =============================================================================
