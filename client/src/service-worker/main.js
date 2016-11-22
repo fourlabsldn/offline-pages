@@ -3,7 +3,9 @@
 import toolbox from 'sw-toolbox';
 import htmlFallbackFor from './fetch/html-fallback';
 import backgroundSync from './fetch/background-sync';
-import contacts from './dynamic-pages/contacts';
+import contactInfo from './dynamic-pages/contacts';
+
+const dynamicPages = { contactInfo };
 
 // Define files that must be available in cache at all times.
 // This will usually be the application shell.
@@ -63,7 +65,7 @@ toolbox.router.get(
   =============================================================================
   Intercept requests to contacts
  */
-toolbox.router.get('/html/contacts', contacts);
+toolbox.router.get('/html/contact-info', dynamicPages.contactInfo);
 
 // =============================================================================
 // By default, all requests will request the resource from

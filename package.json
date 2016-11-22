@@ -42,6 +42,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.2.0",
     "gulp-util": "^3.0.7",
+    "handlebars": "^4.0.6",
     "lodash": "^4.17.2",
     "path": "^0.12.7",
     "rollup-plugin-babel": "^2.6.1",
