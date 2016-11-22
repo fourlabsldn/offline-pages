@@ -53,8 +53,18 @@ Third party resources caching should  probably be left for the Browser to do.
 
 ## Dynamic page generation
 
+To generate pages dynamically we will use handlebars templates that will be precompiled in the server and only fully rendered with the appropriate data in the client.
+
+The client will pre-cache the necessary templates and data.
+
+Not all browsers support service workers so there must be a way to access the page fully rendered by the server.
+
+A possible URL scheme may look like this:
+  - `http://domain.co.uk/<template-name>/` - Returns the pre-compiled template. Maybe should include a header specifying that the template rather than the html is wanted, so the client never accidentally navigate into the template page.
+  - `http://domain.co.uk/<template-name>/<datapoint-id>` - This url should return the fully rendered page, so browsers without service-workers can access the content. Service-workers should intercept requests to this endpoint and generate the rendered page using the template and the precached data, avoiding server requests and making the page available offline. If the service-worker does not have the data to generate this page, it should then request it fully page from the server.
+  - `http://domain.co.uk/<template-name>/<data>` - Endpoint containing the database records that should be used to render the template.
+
+
 ### Problems
 
-It is just not straight forward at all to render your server-precompiled code in the client-side.
-  - The use of partials is very fragile
-  - You must make sure to use the exact same helpers in the server and client side
+  - We **must** use the same Handlebars helpers file in the server and client.
