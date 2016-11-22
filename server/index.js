@@ -81,6 +81,11 @@ app.use('*', (req, res, next) => {
 // ==================
 // Static content
 // ==================
+// The service-worker must be served from the root to be able to manage all domain requests.
+app.use(
+  '/service-worker.js',
+  (req, res) => res.sendFile(path.join(__dirname, '../client/build/service-worker.js'))
+);
 app.use('/static', express.static(path.join(__dirname, '../client/build')));
 
 // ==================

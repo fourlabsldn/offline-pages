@@ -6,7 +6,7 @@ if (window.navigator && 'serviceWorker' in window.navigator) {
   // For the worker to be able to manage requests from all paths,
   // we have to include it at the root of our website, as it can only
   // control requests to paths under the path it is in.
-  window.navigator.serviceWorker.register('/service-worker.js')
+  window.navigator.serviceWorker.register('/service-worker.js', {scope: './'})
     .then(registration => {
       // Registration was successful
       console.log('ServiceWorker registration successful with scope: ', registration.scope);

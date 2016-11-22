@@ -3,18 +3,20 @@
 import toolbox from 'sw-toolbox';
 import htmlFallbackFor from './fetch/html-fallback';
 import backgroundSync from './fetch/background-sync';
+import contacts from './dynamic-pages/contacts';
 
 // Define files that must be available in cache at all times.
 // This will usually be the application shell.
 const OFFLINE_REDIRECTION = '/html/offline';
 const CRITICAL_FILES = [
   OFFLINE_REDIRECTION,
-  '/images/offline.png',
+  '/static/images/offline.png',
 ];
 
 toolbox.precache(CRITICAL_FILES);
 
 /*
+  =============================================================================
   Serve our offline page when an html page is not available
   This must come last because is matching all of our domain's url
  */
@@ -38,8 +40,8 @@ toolbox.router.post(
   }
 );
 
-
 /*
+  =============================================================================
   Serve our offline page when an html page is not available
   This must come last because is matching all of our domain's url
  */
@@ -57,6 +59,13 @@ toolbox.router.get(
   }
 );
 
+/*
+  =============================================================================
+  Intercept requests to contacts
+ */
+toolbox.router.get(':test/contacts', contacts);
+
+// =============================================================================
 // By default, all requests will request the resource from
 // both the cache and the network in parallel. Responding with
 // whichever returns first.
