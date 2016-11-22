@@ -63,7 +63,7 @@ toolbox.router.get(
   =============================================================================
   Intercept requests to contacts
  */
-toolbox.router.get(':test/contacts', contacts);
+toolbox.router.get('/html/contacts', contacts);
 
 // =============================================================================
 // By default, all requests will request the resource from

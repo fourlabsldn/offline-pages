@@ -86,6 +86,10 @@ app.use(
   '/service-worker.js',
   (req, res) => res.sendFile(path.join(__dirname, '../client/build/service-worker.js'))
 );
+app.use(
+  '/service-worker.js.map',
+  (req, res) => res.sendFile(path.join(__dirname, '../client/build/service-worker.js.map'))
+);
 app.use('/static', express.static(path.join(__dirname, '../client/build')));
 
 // ==================
