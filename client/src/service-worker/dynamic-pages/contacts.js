@@ -14,8 +14,8 @@ export default function (request, values, options) {
     require([
       'cacheFirst!http://localhost:3000/api/precompiled/layouts.main',
       'cacheFirst!http://localhost:3000/api/precompiled/contact-info',
-      'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled.js',
-      'cacheFirst!handlebars',
+      'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled',
+      'cacheFirst!http://localhost:3000/static/js/handlebars',
     ],
     (layout, template, helpers, handlebars) => {
       handlebars.registerHelper(helpers);

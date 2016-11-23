@@ -32,9 +32,12 @@ function getModuleText(moduleURL) {
 // Must be loaded after require.js
 define('cacheFirst', [], _ => {
   function load(name, req, onload, config) {
-    const moduleUrl = config.paths && config.paths[name]
-      ? `${config.paths[name]}.js`
+    const moduleUrlWithoutExtension = config.paths && config.paths[name]
+      ? config.paths[name]
       : name;
+
+    const moduleUrl = `${moduleUrlWithoutExtension}.js`;
+    console.log('Module url:', moduleUrl);
 
     // We use a try because the URL fetching may fail, or the cache fetching may fail
     return getModuleText(moduleUrl)
