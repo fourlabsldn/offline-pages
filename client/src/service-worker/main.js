@@ -5,32 +5,27 @@ import htmlFallbackFor from './fetch/html-fallback';
 import backgroundSync from './fetch/background-sync';
 import contactInfo from './dynamic-pages/contacts';
 import notify from './notify';
+import routes from './routes';
 
 const dynamicPages = { contactInfo };
 
-// Define files that must be available in cache at all times.
+// Files that must be available in cache at all times.
 // This will usually be the application shell.
-const OFFLINE_REDIRECTION = '/html/offline';
-const CRITICAL_FILES = [
-  OFFLINE_REDIRECTION,
-  '/static/images/offline.png',
-];
-
-toolbox.precache(CRITICAL_FILES);
+toolbox.precache(routes.precache);
 
 /*
   =============================================================================
   Serve our offline page when an html page is not available
   This must come last because is matching all of our domain's url
  */
-const newMessageHandler = backgroundSync(
+const sendLaterIfOffline = backgroundSync(
   toolbox.networkFirst,
   _ => new Response('{ "waiting": true }')
 );
 
 toolbox.router.post(
   /\/api\//,
-  newMessageHandler,
+  sendLaterIfOffline,
   {
     // Use a dedicated cache object
     cache: {
@@ -50,13 +45,13 @@ toolbox.router.post(
  */
 toolbox.router.get(
   /html/,
-  htmlFallbackFor(toolbox.fastest, OFFLINE_REDIRECTION),
+  htmlFallbackFor(toolbox.fastest, routes.offlineFallback.page),
   {
     // Use a dedicated cache object
     cache: {
       name: 'general',
       //  maxEntries: 10,
-      // Expire any entries that are older than one week seconds.
+      // Expire any entries that are older than one week.
       maxAgeSeconds: 60 * 60 * 24 * 7,
     },
   }
@@ -64,7 +59,7 @@ toolbox.router.get(
 
 /*
   =============================================================================
-  Intercept requests to contacts
+  Intercept requests to contacts and build the page dynamically
  */
 toolbox.router.get('/html/contact-info', dynamicPages.contactInfo);
 

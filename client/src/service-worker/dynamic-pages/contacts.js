@@ -1,6 +1,7 @@
 /* globals requirejs, require  */
 /* eslint-disable global-require */
 import '../requirejs';
+import routes from '../routes';
 
 // We will use a custom version of handlebars, which we will cache.
 // The templates loaded asynchronously will also require handlebars,
@@ -8,22 +9,19 @@ import '../requirejs';
 requirejs.config({
   baseUrl: '/',
   map: {
-    '*': { handlebars: 'cacheFirst!handlebars-modified' },
-  },
-  paths: {
-    'handlebars-modified': 'http://localhost:3000/static/js/handlebars-modified',
+    '*': { handlebars: `cacheFirst!${routes.contactsPage.handlebars}` },
   },
 });
 
-export default function (request, values, options) {
+export default function (request, values, options) { // eslint-disable-line no-unused-vars
   return new Promise((resolve, reject) => {
     require([
-      'cacheFirst!http://localhost:3000/api/precompiled/layouts.main.js',
-      'cacheFirst!http://localhost:3000/api/precompiled/contact-info.js',
-      'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled.js',
       'handlebars',
+      `cacheFirst!${routes.contactsPage.handlebarsHelpers}`,
+      `cacheFirst!${routes.contactsPage.layoutTemplate}`,
+      `cacheFirst!${routes.contactsPage.pageTemplate}`,
     ],
-    (layout, template, helpers, handlebars) => {
+    (handlebars, helpers, layout, template) => {
       handlebars.registerHelper(helpers);
 
       const pageTemplate = handlebars.template(template);
@@ -32,6 +30,7 @@ export default function (request, values, options) {
       const layoutTemplate = handlebars.template(layout);
       const compiledLayout = layoutTemplate({ body: compiledPage });
 
+      // We create a response with proper page headers
       const headers = {
         'access-control-allow-origin': '*',
         'content-length': compiledLayout.length,
@@ -42,6 +41,7 @@ export default function (request, values, options) {
       const response = new Response(compiledLayout, { headers });
       resolve(response);
     },
+    // on error, reject the promise
     reject
     );
   })
