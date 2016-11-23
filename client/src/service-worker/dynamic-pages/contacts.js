@@ -2,20 +2,13 @@
 /* eslint-disable global-require */
 import '../requirejs';
 
-requirejs.config({
-  baseUrl: '/',
-  paths: {
-    handlebars: 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars',
-  },
-});
-
 export default function (request, values, options) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     require([
-      'cacheFirst!http://localhost:3000/api/precompiled/layouts.main',
-      'cacheFirst!http://localhost:3000/api/precompiled/contact-info',
-      'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled',
-      'cacheFirst!http://localhost:3000/static/js/handlebars',
+      'cacheFirst!http://localhost:3000/api/precompiled/layouts.main.js',
+      'cacheFirst!http://localhost:3000/api/precompiled/contact-info.js',
+      'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled.js',
+      'cacheFirst!handlebars',
     ],
     (layout, template, helpers, handlebars) => {
       handlebars.registerHelper(helpers);
@@ -35,6 +28,17 @@ export default function (request, values, options) {
 
       const response = new Response(compiledLayout, { headers });
       resolve(response);
-    });
+    },
+    reject
+    );
+  })
+  .catch(error => {
+    console.log(`
+      An error occurred trying to dynamically generate the page.
+      Let's just fetch it from the server. Here is the error:
+      ${error}
+      `);
+
+    return fetch(request.clone());
   });
 }

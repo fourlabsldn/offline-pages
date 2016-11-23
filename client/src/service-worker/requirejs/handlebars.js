@@ -80,7 +80,7 @@ THE SOFTWARE.
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define('handlebars', [], factory);
 	else if(typeof exports === 'object')
 		exports["Handlebars"] = factory();
 	else
