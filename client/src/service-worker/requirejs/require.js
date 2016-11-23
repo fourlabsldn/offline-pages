@@ -8,8 +8,7 @@
 /*global window, navigator, document, importScripts, setTimeout, opera */
 
 var requirejs, require, define;
-export default function (global) {
-    var setTimeout = typeof setTimeout === 'undefined' ? undefined : setTimeout;
+(function (global, setTimeout) {
     var req, s, head, baseElement, dataMain, src,
         interactiveScript, currentlyAddingScript, mainScript, subPath,
         version = '2.3.2',
@@ -2140,4 +2139,7 @@ export default function (global) {
 
     //Set up with config info.
     req(cfg);
-};
+    global.requirejs = requirejs;
+    global.require = require;
+    global.define = define;
+}(this, (typeof setTimeout === 'undefined' ? undefined : setTimeout)));

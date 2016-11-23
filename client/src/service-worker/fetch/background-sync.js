@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import localForage from 'localforage';
 import requestSerialiser from './request-serialiser';
-import notify from './notify';
+import notify from '../notify';
 
 const OUTBOX = 'flush-outbox';
 

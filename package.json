@@ -25,6 +25,7 @@
     "localforage": "^1.4.3",
     "mongodb": "^2.2.11",
     "require-dir-all": "^0.4.10",
+    "requirejs": "^2.3.2",
     "sw-toolbox": "^3.4.0"
   },
   "devDependencies": {

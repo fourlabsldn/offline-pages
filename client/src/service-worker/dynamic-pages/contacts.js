@@ -1,5 +1,7 @@
-/* globals importScripts, requirejs, require */
-importScripts('https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js');
+/* globals requirejs, require  */
+/* eslint-disable global-require */
+import '../requirejs';
+
 requirejs.config({
   baseUrl: '/',
   paths: {
@@ -10,10 +12,10 @@ requirejs.config({
 export default function (request, values, options) {
   return new Promise(resolve => {
     require([
-      'http://localhost:3000/api/precompiled/layouts.main',
-      'http://localhost:3000/api/precompiled/contact-info',
-      'http://localhost:3000/api/template-helpers/helpers-transpiled.js',
-      'handlebars',
+      'cacheFirst!http://localhost:3000/api/precompiled/layouts.main',
+      'cacheFirst!http://localhost:3000/api/precompiled/contact-info',
+      'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled.js',
+      'cacheFirst!handlebars',
     ],
     (layout, template, helpers, handlebars) => {
       handlebars.registerHelper(helpers);

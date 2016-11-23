@@ -3,7 +3,7 @@ export default (title, message) => {
     // If it's okay let's create a notification
     self.registration.showNotification(title, {
       body: message,
-      icon: '/images/offline.png',
+      icon: '/static/images/offline.png',
     });
   }
 }

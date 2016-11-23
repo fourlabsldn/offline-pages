@@ -35,6 +35,7 @@ const DEFAULT_CONFIG = {
       runtimeHelpers: true,
       exclude: 'node_modules/**',
       babelrc: false,
+      ignore: ['client/src/service-worker/requirejs/**/*'],
       plugins: [
         'lodash',
         'transform-flow-strip-types',
