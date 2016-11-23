@@ -2,22 +2,21 @@
 /* eslint-disable global-require */
 import '../requirejs';
 
+requirejs.config({
+  baseUrl: '/',
+  paths: {
+    handlebars: 'http://localhost:3000/static/js/handlebars',
+  },
+});
 
 
 export default function (request, values, options) {
   return new Promise((resolve, reject) => {
-    define('handlebars.runtime', [],  function () {
-      console.log('Handlebars was freaking required');
-      return {
-        freaking: 'handlebars',
-      }
-    });
-    
     require([
       'cacheFirst!http://localhost:3000/api/precompiled/layouts.main.js',
       'cacheFirst!http://localhost:3000/api/precompiled/contact-info.js',
       'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled.js',
-      'cacheFirst!handlebars.runtime',
+      'cacheFirst!handlebars',
     ],
     (layout, template, helpers, handlebars) => {
       handlebars.registerHelper(helpers);
