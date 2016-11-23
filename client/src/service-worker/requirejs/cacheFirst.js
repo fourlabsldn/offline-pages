@@ -51,9 +51,11 @@ define('cacheFirst', [], _ => {
     // If the module was already executed before it is available and
     // we don't need to load it again.
     const loadedModules = get('s.contexts._.defined', require) || {};
-    const isModuleLoaded = Object.keys(loadedModules).includes(name);
-    console.log('Modules loaded during', name, 'execution:', Object.keys(loadedModules))
-    if (isModuleLoaded) {
+    const loadedModuleNames = Object.keys(loadedModules);
+    const shims = Object.keys(config.shim);
+    const isModuleAvailable = [].concat(loadedModuleNames, shims).includes(name);
+    console.log('Modules available during', name, 'execution:', [].concat(loadedModuleNames, shims));
+    if (isModuleAvailable) {
       console.log('Using module from execution context', name);
       standardRequire(req, onload, name);
       return;

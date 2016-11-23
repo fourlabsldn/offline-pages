@@ -2,10 +2,16 @@
 /* eslint-disable global-require */
 import '../requirejs';
 
+// We will use a custom version of handlebars, which we will cache.
+// The templates loaded asynchronously will also require handlebars,
+// that's why we have the mapping.
 requirejs.config({
   baseUrl: '/',
+  map: {
+    '*': { handlebars: 'cacheFirst!handlebars-modified' },
+  },
   paths: {
-    handlebars: 'http://localhost:3000/static/js/handlebars',
+    'handlebars-modified': 'http://localhost:3000/static/js/handlebars-modified',
   },
 });
 
@@ -16,7 +22,7 @@ export default function (request, values, options) {
       'cacheFirst!http://localhost:3000/api/precompiled/layouts.main.js',
       'cacheFirst!http://localhost:3000/api/precompiled/contact-info.js',
       'cacheFirst!http://localhost:3000/api/template-helpers/helpers-transpiled.js',
-      'cacheFirst!handlebars',
+      'handlebars',
     ],
     (layout, template, helpers, handlebars) => {
       handlebars.registerHelper(helpers);
