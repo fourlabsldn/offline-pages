@@ -15,6 +15,12 @@ requirejs.config({
 
 export default function (request, values, options) { // eslint-disable-line no-unused-vars
   return new Promise((resolve, reject) => {
+    // NOTE: Currently, if any dependency of this require call fails
+    // the page will not be built dynamically for the entire life of the
+    // service-worker execution context, which is basically until the browser is
+    // closed. We need to think of a way to make that not be the case.
+    // One solution is to append a random string at the end of each
+    // dependency name, thus forcing requireJs to call cacheFirst again.
     require([
       'handlebars',
       `cacheFirst!${routes.contactsPage.handlebarsHelpers}`,
@@ -45,13 +51,10 @@ export default function (request, values, options) { // eslint-disable-line no-u
     reject
     );
   })
-  .catch(error => {
-    console.log(`
-      An error occurred trying to dynamically generate the page.
-      Let's just fetch it from the server. Here is the error:
-      ${error}
-      `);
-
+  .catch(_ => {
+    // If we fail to build the page dynamically, let's just fetch it entirely
+    // from the server.
+    console.warn('Unable to build page dynamically');
     return fetch(request.clone());
   });
 }

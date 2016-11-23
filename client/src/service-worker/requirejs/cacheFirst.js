@@ -1,5 +1,5 @@
 /* globals define */
-import { curry, get } from 'lodash/fp';
+import { curry } from 'lodash/fp';
 
 const REQUIREJS_MODULES_CACHE = 'requirejs-modules-cache';
 
@@ -47,23 +47,19 @@ function getModuleText(url) {
 // Requirejs plugin for fetching files from cache first.
 // Must be loaded after require.js
 define('cacheFirst', [], _ => {
+  /**
+   * @method load
+   * @param  {String} name - Module name as required.
+   * @param  {Object/Function} req - instance of RequireJS
+   * @param  {Function} onload - function to be called with the loading outcome
+   * @param  {Object} config - RequireJS configuration object
+   * @return {void} - This function does not return anything. It must call
+   *                     onload or onload.fromText or onload.error
+   */
   function load(name, req, onload, config) {
-    // If the module was already executed before it is available and
-    // we don't need to load it again.
-    const loadedModules = get('s.contexts._.defined', require) || {};
-    const loadedModuleNames = Object.keys(loadedModules);
-    const shims = Object.keys(config.shim);
-    const isModuleAvailable = [].concat(loadedModuleNames, shims).includes(name);
-    if (isModuleAvailable) {
-      console.log('Using module from execution context', name);
-      standardRequire(req, onload, name);
-      return;
-    }
-
-    const url = config.paths && config.paths[name]
+    const url = config && config.paths && config.paths[name]
       ? `${config.paths[name]}.js`
       : name;
-    console.log('Module url:', url);
 
     // We use a try because the URL fetching may fail, or the cache fetching may fail
     getModuleText(url)
@@ -78,5 +74,6 @@ define('cacheFirst', [], _ => {
       });
   }
 
+  // To create a plugin we return this interface.
   return { load };
 });
