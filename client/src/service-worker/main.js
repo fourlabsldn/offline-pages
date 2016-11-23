@@ -14,12 +14,6 @@ const OFFLINE_REDIRECTION = '/html/offline';
 const CRITICAL_FILES = [
   OFFLINE_REDIRECTION,
   '/static/images/offline.png',
-
-  // Dynamic template generation files
-  'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js',
-  'http://localhost:3000/api/precompiled/layouts.main',
-  'http://localhost:3000/api/template-helpers/helpers-transpiled.js',
-  'http://localhost:3000/api/precompiled/contact-info',
 ];
 
 toolbox.precache(CRITICAL_FILES);

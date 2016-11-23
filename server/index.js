@@ -111,8 +111,10 @@ app.get('/api/messages', routes['messages']);
 app.post('/api/new-message', routes['new-message']);
 app.get('/api/contacts', routes['contacts']);
 app.get('/api/projects', routes['projects']);
+
+// These two endpoints have `.js` extension because they are Javascript files.
 // Returns a precompiled template
-app.get('/api/precompiled/:templateName', exposeTemplates, routes['precompiled']);
+app.get('/api/precompiled/:templateName.js', exposeTemplates, routes['precompiled']);
 // Handlebars helpers
 app.use(
   '/api/template-helpers',

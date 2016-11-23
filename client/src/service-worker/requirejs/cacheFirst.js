@@ -15,13 +15,16 @@ function getModuleText(moduleURL) {
         return cachedModuleResponse;
       }
 
-      return fetch(moduleURL, { mode: 'no-cors' })
+      return fetch(moduleURL)
         .then(response => {
+          if (!(200 <= response.status && response.status < 400)) { // eslint-disable-line yoda
+            console.log(`Error fetching ${moduleURL}`);
+            throw new Error(`Failed to fetch ${moduleURL}`);
+          }
+
           console.log('Saving to cache: ', moduleURL);
-
           caches.open(REQUIREJS_MODULES_CACHE)
-          .then(requirejsCache => requirejsCache.put(moduleURL, response.clone()));
-
+            .then(requirejsCache => requirejsCache.put(moduleURL, response.clone()));
           return response.clone();
         });
     })

@@ -1391,7 +1391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = function (Handlebars) {
 	  /* istanbul ignore next */
-	  var root = typeof global !== 'undefined' ? global : window,
+	  var root = typeof global !== 'undefined' ? global : this,
 	      $Handlebars = root.Handlebars;
 	  /* istanbul ignore next */
 	  Handlebars.noConflict = function () {
