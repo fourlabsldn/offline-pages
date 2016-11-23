@@ -1,5 +1,5 @@
 /* globals define */
-import { curry } from 'lodash/fp';
+import { curry, get } from 'lodash/fp';
 
 const REQUIREJS_MODULES_CACHE = 'requirejs-modules-cache';
 
@@ -18,7 +18,11 @@ const saveToCache = curry((cacheName, response) => {
 
 const fromNetwork = fetch;
 
-const fromCache = url => caches.match(url);
+const fromCache = url =>
+  caches.match(url);
+
+const standardRequire = (req, onload, name) =>
+  req([name], onload, onload.error);
 
 /**
  * Get the content of the url from cache if possible, if not, from network.
@@ -44,20 +48,32 @@ function getModuleText(url) {
 // Must be loaded after require.js
 define('cacheFirst', [], _ => {
   function load(name, req, onload, config) {
+    // If the module was already executed before it is available and
+    // we don't need to load it again.
+    const loadedModules = get('s.contexts._.defined', require) || {};
+    const isModuleLoaded = Object.keys(loadedModules).includes(name);
+    console.log('Modules loaded during', name, 'execution:', Object.keys(loadedModules))
+    if (isModuleLoaded) {
+      console.log('Using module from execution context', name);
+      standardRequire(req, onload, name);
+      return;
+    }
+
     const url = config.paths && config.paths[name]
       ? `${config.paths[name]}.js`
       : name;
-
     console.log('Module url:', url);
 
     // We use a try because the URL fetching may fail, or the cache fetching may fail
-    return getModuleText(url)
+    getModuleText(url)
       .then(text => onload.fromText(text))
       // If it fails we use the same API as require().
+      // It will use importScripts, which doesn't cache the response
+      // but at this point it we tried everything we could and it is
+      // better to let requireJS deal with any error that may occur.
       .catch(__ => {
-        console.log('Using requirejs for', url);
-
-        req([name], onload, onload.error);
+        console.log('Using requirejs for', name);
+        standardRequire(req, onload, name);
       });
   }
 
