@@ -15,7 +15,6 @@ requirejs.config({
   },
 });
 
-
 export default function (request, values, options) {
   return new Promise((resolve, reject) => {
     require([

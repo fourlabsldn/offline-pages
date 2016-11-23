@@ -54,7 +54,6 @@ define('cacheFirst', [], _ => {
     const loadedModuleNames = Object.keys(loadedModules);
     const shims = Object.keys(config.shim);
     const isModuleAvailable = [].concat(loadedModuleNames, shims).includes(name);
-    console.log('Modules available during', name, 'execution:', [].concat(loadedModuleNames, shims));
     if (isModuleAvailable) {
       console.log('Using module from execution context', name);
       standardRequire(req, onload, name);
