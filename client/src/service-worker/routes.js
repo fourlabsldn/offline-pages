@@ -7,6 +7,10 @@ const contactsPage = {
   pageTemplate: '/api/precompiled/contact-info.js',
 };
 
+const database = {
+  all: '/api/database',
+};
+
 const offlineFallback = {
   page: '/html/offline',
   thumbnail: '/static/images/offline.png',
@@ -14,11 +18,13 @@ const offlineFallback = {
 
 const precache = [].concat(
   values(contactsPage),
-  values(offlineFallback)
+  values(offlineFallback),
+  values(database)
 );
 
 export default {
+  precache,
   contactsPage,
   offlineFallback,
-  precache,
+  database,
 };
