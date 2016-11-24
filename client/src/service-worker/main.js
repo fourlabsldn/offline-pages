@@ -3,16 +3,14 @@
 import toolbox from 'sw-toolbox';
 import htmlFallbackFor from './fetch/html-fallback';
 import backgroundSync from './fetch/background-sync';
+import precache from './fetch/precache';
 import contactInfo from './dynamic-pages/contacts';
 import notify from './notify';
 import routes from './routes';
 
 const dynamicPages = { contactInfo };
 
-// Files that must be available in cache at all times.
-// This will usually be the application shell.
-toolbox.precache(routes.precache);
-
+const GLOBAL_CACHE = 'general';
 /*
   =============================================================================
   Serve our offline page when an html page is not available
@@ -29,7 +27,7 @@ toolbox.router.post(
   {
     // Use a dedicated cache object
     cache: {
-      name: 'api',
+      name: GLOBAL_CACHE,
       networkTimeoutSeconds: 1,
       //  maxEntries: 10,
       // Expire any entries that are older than one week seconds.
@@ -37,6 +35,12 @@ toolbox.router.post(
     },
   }
 );
+
+/*
+  =============================================================================
+  Intercept requests to contacts and build the page dynamically
+ */
+toolbox.router.get('/html/contact-info/:id', dynamicPages.contactInfo);
 
 /*
   =============================================================================
@@ -49,7 +53,7 @@ toolbox.router.get(
   {
     // Use a dedicated cache object
     cache: {
-      name: 'general',
+      name: GLOBAL_CACHE,
       //  maxEntries: 10,
       // Expire any entries that are older than one week.
       maxAgeSeconds: 60 * 60 * 24 * 7,
@@ -59,9 +63,22 @@ toolbox.router.get(
 
 /*
   =============================================================================
-  Intercept requests to contacts and build the page dynamically
+  Serve our offline page when an html page is not available
+  This must come last because is matching all of our domain's url
  */
-toolbox.router.get('/html/contact-info/:id', dynamicPages.contactInfo);
+toolbox.router.get(
+  /static/,
+  toolbox.cacheOnly,
+  {
+    // Use a dedicated cache object
+    cache: {
+      name: GLOBAL_CACHE,
+      //  maxEntries: 10,
+      // Expire any entries that are older than one week.
+      maxAgeSeconds: 60 * 60 * 24 * 7,
+    },
+  }
+);
 
 // =============================================================================
 // By default, all requests will request the resource from
@@ -69,13 +86,26 @@ toolbox.router.get('/html/contact-info/:id', dynamicPages.contactInfo);
 // whichever returns first.
 toolbox.router.default = toolbox.networkFirst;
 
-// ensure our service worker takes control of the page as soon
+// Ensure our service worker takes control of the page as soon
 // as possible.
 self.addEventListener(
   'install',
   event => {
-    // notify('Install happened', '');
-    event.waitUntil(self.skipWaiting());
+    console.log('Pre-caching: ', routes.precache);
+
+    const precaching = precache(routes.precache, GLOBAL_CACHE)
+    .then(cachedResponses => {
+      const contactsDataUrlIndex = routes.precache.indexOf(routes.contactsPage.data);
+      const contactsResponse = cachedResponses[contactsDataUrlIndex];
+      return contactsResponse.json();
+    })
+    .then(contacts => {
+      const contactImages = contacts.map(c => c.image);
+      return precache(contactImages, GLOBAL_CACHE);
+    })
+    .then(_ => self.skipWaiting()); // We make the service-worker take charge when finished.
+
+    event.waitUntil(precaching);
   }
 );
 
@@ -86,3 +116,7 @@ self.addEventListener(
     event.waitUntil(self.clients.claim());
   }
 );
+
+// Files that must be available in cache at all times.
+// This will usually be the application shell.
+toolbox.precache(routes.precache);

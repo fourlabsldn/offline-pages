@@ -5,8 +5,8 @@ const sameDomainHtmlRequest = req => {
 };
 
 // Provide a fallback page for when offline
-export default function htmlFallbackFor(handler, route) {
-  if (!route) {
+export default function htmlFallbackFor(handler, fallbackPage) {
+  if (!fallbackPage) {
     throw new Error('htmlFallbackFor: Route parameter not set.');
   }
 
@@ -17,15 +17,18 @@ export default function htmlFallbackFor(handler, route) {
           throw err;
         }
 
-        return caches
-        .match(route)
-        .then(response => {
-          if (response) {
-            return response;
-          }
+        // Let's first be quite sure that we really don't have
+        // this in our cache
+        return caches.match(request.url);
+      })
+      // If we don't, then let's get the fallback page
+      .then(cached => (cached || caches.match(fallbackPage)))
+      .then(response => {
+        if (response) {
+          return response;
+        }
 
-          throw err;
-        });
+        throw new Error('Unable to fetch page', request.url);
       });
   };
 }

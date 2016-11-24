@@ -19,7 +19,9 @@ const offlineFallback = {
 const precache = [].concat(
   values(contactsPage),
   values(offlineFallback),
-  values(dynamicPages)
+  values(dynamicPages),
+  '/html/contacts',
+  '/html/home',
 );
 
 export default {

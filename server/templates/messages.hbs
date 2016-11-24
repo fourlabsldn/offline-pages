@@ -54,7 +54,7 @@
       .then(m => m.json())
       .then(messages => messages.map(m => `<li class="list-group-item">${m}</li>`))
       .then(messages => (messsagesContainer.innerHTML = messages.join('\n')))
-      .catch(_ => setInfo('Ops, you are offline. Let\'s try again later', 'danger'))
+      .catch(_ => null);
   }
 
   loadMessages();
