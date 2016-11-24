@@ -25,7 +25,7 @@ function get(id) {
   const db = {
     contacts: readJSON('contacts'),
     messages: readJSON('messages'),
-    project: readJSON('projects'),
+    projects: readJSON('projects'),
   };
 
   // If there is no valid ID, we send the whole database.
