@@ -1,9 +1,9 @@
 /* globals define */
-import { moduleUrl, getModuleText, standardRequire } from './utils';
+import { moduleUrl, getModuleText } from './utils';
 
 // Requirejs plugin for fetching files from cache first.
 // Must be loaded after require.js
-define('cacheFirst', [], _ => {
+define('cacheFirstJson', [], _ => {
   /**
    * @method load
    * @param  {String} name - Module name as required.
@@ -17,15 +17,8 @@ define('cacheFirst', [], _ => {
     const url = moduleUrl(name, config);
 
     getModuleText(url)
-      .then(text => onload.fromText(text))
-      // If it fails we use the same API as require().
-      // It will use importScripts, which doesn't cache the response
-      // but at this point it we tried everything we could and it is
-      // better to let requireJS deal with any error that may occur.
-      .catch(__ => {
-        console.log('Using requirejs for', name);
-        standardRequire(req, onload, name);
-      });
+      .then(text => onload.fromText(`define([], () => ${text})`))
+      .catch(onload.error);
   }
 
   // To create a plugin we return this interface.

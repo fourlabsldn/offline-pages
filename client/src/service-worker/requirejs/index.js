@@ -1,4 +1,5 @@
 // RequireJS
 import './require';
-// Custom requireJS plugin to load dependencies cacheFirst
+// Custom requireJS plugins to load dependencies from the cache
 import './cacheFirst';
+import './cacheFirstJson';
