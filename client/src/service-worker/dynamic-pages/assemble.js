@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 import '../requirejs';
 import routes from '../routes';
+import { curry } from 'lodash';
 
 // We will use a custom version of handlebars, which we will cache.
 // The templates loaded asynchronously will also require handlebars,
@@ -12,6 +13,38 @@ requirejs.config({
     '*': { handlebars: `cacheFirst!${routes.dynamicPages.handlebars}` },
   },
 });
+
+const putPageTogether = curry((dataTransform, loadedData) => {
+  const [
+    handlebars,
+    helpers,
+    layoutTemplate,
+    pageTemplate,
+    ...data
+  ] = loadedData;
+
+  handlebars.registerHelper(helpers);
+  const { layoutData, pageData } = dataTransform(data);
+
+  const precompiledPage = handlebars.template(pageTemplate);
+  const compiledPage = precompiledPage(pageData);
+
+  const finalLayoutData = Object.assign({}, layoutData, { body: compiledPage });
+  const precompiledLayout = handlebars.template(layoutTemplate);
+  const compiledLayout = precompiledLayout(finalLayoutData);
+
+  // We create a response with proper page headers
+  const headers = {
+    'access-control-allow-origin': '*',
+    'content-length': compiledLayout.length,
+    'content-type': 'text/html; charset=utf-8',
+    date: new Date().toUTCString(),
+  };
+
+  const response = new Response(compiledLayout, { headers });
+  return response;
+});
+
 
 /**
  * This function will build the page using a general layout and a page-specific
@@ -29,6 +62,13 @@ requirejs.config({
 export default function (layoutTemplateUrl, pageTemplateUrl, dataUrlArray, dataTransform) {
   return new Promise((resolve, reject) => {
     const dataDependencies = dataUrlArray.map(url => `cacheFirstJson!${url}`);
+    const dependencies = [
+      'handlebars',
+      `cacheFirst!${routes.dynamicPages.handlebarsHelpers}`,
+      `cacheFirst!${layoutTemplateUrl}`,
+      `cacheFirst!${pageTemplateUrl}`,
+      ...dataDependencies,
+    ];
 
     // NOTE: Currently, if any dependency of this require call fails
     // the page will not be built dynamically for the entire life of the
@@ -36,37 +76,13 @@ export default function (layoutTemplateUrl, pageTemplateUrl, dataUrlArray, dataT
     // closed. We need to think of a way to make that not be the case.
     // One solution is to append a random string at the end of each
     // dependency name, thus forcing requireJs to call cacheFirst again.
-    require([
-      'handlebars',
-      `cacheFirst!${routes.dynamicPages.handlebarsHelpers}`,
-      `cacheFirst!${layoutTemplateUrl}`,
-      `cacheFirst!${pageTemplateUrl}`,
-      ...dataDependencies,
-    ],
-    (handlebars, helpers, layoutTemplate, pageTemplate, ...data) => {
-      handlebars.registerHelper(helpers);
-      const { layoutData, pageData } = dataTransform(data);
-
-      const precompiledPage = handlebars.template(pageTemplate);
-      const compiledPage = precompiledPage(pageData);
-
-      const finalLayoutData = Object.assign({}, layoutData, { body: compiledPage });
-      const precompiledLayout = handlebars.template(layoutTemplate);
-      const compiledLayout = precompiledLayout(finalLayoutData);
-
-      // We create a response with proper page headers
-      const headers = {
-        'access-control-allow-origin': '*',
-        'content-length': compiledLayout.length,
-        'content-type': 'text/html; charset=utf-8',
-        date: new Date().toUTCString(),
-      };
-
-      const response = new Response(compiledLayout, { headers });
-      resolve(response);
-    },
-    // on error, reject the promise
-    reject
+    require(
+      dependencies,
+      (...args) => resolve(args),
+      reject // on error, reject the promise
     );
-  });
+  })
+  // We call it in a `then` because if there is any error we can catch it
+  // in the promise.
+  .then(putPageTogether(dataTransform));
 }

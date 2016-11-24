@@ -17,7 +17,11 @@ export default function (request, values, options) { // eslint-disable-line no-u
     data => {
       const contacts = data[0];
       const { id } = values;
-      const contact = contacts.find(c => c.id === id) || { name: 'Not found.' };
+      const contact = contacts.find(c => c.id === id);
+
+      if (!contact) {
+        throw new Error('Contact required id not in cached database');
+      }
 
       return {
         layoutData: { title: 'contacts' },
