@@ -20,10 +20,10 @@ const fromNetwork = fetch;
 const fromCache = url =>
   caches.match(url);
 
-const standardRequire = (req, onload, name) =>
+export const standardRequire = (req, onload, name) =>
   req([name], onload, onload.error);
 
-const moduleUrl = (name, config) => (
+export const moduleUrl = (name, config) => (
   config && config.paths && config.paths[name]
     ? `${config.paths[name]}.js`
     : name
@@ -35,7 +35,7 @@ const moduleUrl = (name, config) => (
  * @param  {String} url
  * @return {Promise<String>} Module text content
  */
-function getModuleText(url) {
+export function getModuleText(url) {
   return fromCache(url)
     .then(cachedResponse => {
       if (cachedResponse !== undefined) {
@@ -48,9 +48,3 @@ function getModuleText(url) {
     })
     .then(response => response.text());
 }
-
-export default {
-  moduleUrl,
-  getModuleText,
-  standardRequire,
-};

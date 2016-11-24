@@ -17,7 +17,8 @@ define('cacheFirstJson', [], _ => {
     const url = moduleUrl(name, config);
 
     getModuleText(url)
-      .then(text => onload.fromText(`define([], () => ${text})`))
+       // Define a function that returns the JSON object.
+      .then(text => onload.fromText(`define([], () => (${text}))`))
       .catch(onload.error);
   }
 
