@@ -3,15 +3,12 @@ import { values } from 'lodash/fp';
 const contactsPage = {
   layoutTemplate: '/api/precompiled/layouts.main.js',
   pageTemplate: '/api/precompiled/contact-info.js',
+  data: '/api/database/contacts',
 };
 
 const dynamicPages = {
   handlebars: '/static/js/handlebars-modified.js',
   handlebarsHelpers: '/api/template-helpers/helpers-transpiled.js',
-};
-
-const database = {
-  all: '/api/database',
 };
 
 const offlineFallback = {
@@ -22,7 +19,6 @@ const offlineFallback = {
 const precache = [].concat(
   values(contactsPage),
   values(offlineFallback),
-  values(database),
   values(dynamicPages)
 );
 
@@ -30,6 +26,5 @@ export default {
   precache,
   contactsPage,
   offlineFallback,
-  database,
   dynamicPages,
 };

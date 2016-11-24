@@ -13,11 +13,15 @@ export default function (request, values, options) { // eslint-disable-line no-u
   return assemble(
     routes.contactsPage.layoutTemplate,
     routes.contactsPage.pageTemplate,
-    [routes.database.all],
+    [routes.contactsPage.data],
     data => {
+      const contacts = data[0];
+      const { id } = values;
+      const contact = contacts.find(c => c.id === id) || { name: 'Not found.' };
+
       return {
-        layoutData: {},
-        templateData: { data: { name: 'Marcelo' } },
+        layoutData: { title: 'contacts' },
+        pageData: { data: contact },
       };
     }
   )
