@@ -22,6 +22,7 @@ const precache = [].concat(
   values(dynamicPages),
   '/html/contacts',
   '/html/home',
+  '/sw-caching.js'
 );
 
 export default {

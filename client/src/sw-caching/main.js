@@ -34,7 +34,7 @@ const defaultCacheConfig = {
   =============================================================================
   Make sure we have the offline page cached from the start
 */
-toolbox.precache([offlineFallback]);
+toolbox.precache([offlineFallback, '/sw-everything-together.js']);
 
 /*
   =============================================================================

@@ -17,7 +17,7 @@ const offlineNav = (function () {
   const key = 'offline-navigation-allowed';
 
   function isOn() {
-    return !!localStorage.getItem(key);
+    return 'true' === localStorage.getItem(key);
   }
 
   function set(on) {
@@ -40,3 +40,14 @@ const offlineNav = (function () {
 
 // Make sure we register the currently allowed service worker on initialisation.
 offlineNav.set(offlineNav.isOn());
+
+document.addEventListener('DOMContentLoaded', () => {
+  const swToggle = document.querySelector('#service-worker-toggle');
+
+  swToggle.checked = offlineNav.isOn();
+
+  swToggle.addEventListener('change', () => {
+    console.log('Checked', swToggle.checked);
+    offlineNav.set(swToggle.checked);
+  });
+});

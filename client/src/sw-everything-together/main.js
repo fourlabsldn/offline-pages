@@ -56,7 +56,8 @@ toolbox.router.post(
  */
 toolbox.router.get(
   '/html/contact-info/:id',
-  dynamicPages.contactInfo
+  dynamicPages.contactInfo,
+  defaultCacheConfig
 );
 
 /*
