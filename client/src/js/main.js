@@ -1,19 +1,42 @@
+function registerServiceWorker(fileName) {
+  if (!(window.navigator && 'serviceWorker' in window.navigator)) {
+    return;
+  }
 
-// Register service worker
-if (window.navigator && 'serviceWorker' in window.navigator) {
-  // Let's register the worker
-  // For the worker to be able to manage requests from all paths,
-  // we have to include it at the root of our website, as it can only
-  // control requests to paths under the path it is in.
-  window.navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-    .catch(err => {
-      // registration failed :(
-      console.log('ServiceWorker registration failed: ', err);
-    });
+  // Only one service worker at a time is allowed. The newest ones kick
+  // the oldest ones.
+  window.navigator.serviceWorker.register(`/${fileName}.js`, { scope: '/' })
+  .catch(err => {
+    console.log('Cache ServiceWorker registration failed: ', err);
+  });
 }
 
-// Our service worker will use notifications, so we have to make sure to
-// ask for permission if it still hasn't been granted.
-if (Notification.permission !== 'denied') {
-  Notification.requestPermission();
-}
+const offlineNav = (function () {
+  const cacheOnlySW = 'sw-caching';
+  const fullSW = 'sw-everything-together';
+  const key = 'offline-navigation-allowed';
+
+  function isOn() {
+    return !!localStorage.getItem(key);
+  }
+
+  function set(on) {
+    localStorage.setItem(key, !!on);
+
+    if (!!on) {
+      // Our offline navigation service worker will use notifications, so we
+      // have to make sure to ask for permission if it still hasn't been granted.
+      if (Notification.permission !== 'denied') {
+        Notification.requestPermission();
+      }
+      registerServiceWorker(fullSW);
+    } else {
+      registerServiceWorker(cacheOnlySW);
+    }
+  }
+
+  return { isOn, set };
+}());
+
+// Make sure we register the currently allowed service worker on initialisation.
+offlineNav.set(offlineNav.isOn());

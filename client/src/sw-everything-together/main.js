@@ -1,4 +1,16 @@
-/* globals */
+/*
+================================================================================
+
+
+  This service worker takes care of caching static files
+  and providing a fallback page saying "You seem to be offline".
+
+  It will also download parts of the database to make dynamic page loading
+  possible.
+
+
+================================================================================
+*/
 
 import toolbox from 'sw-toolbox';
 import htmlFallbackFor from './fetch/html-fallback';
@@ -65,7 +77,7 @@ toolbox.router.get(
  */
 toolbox.router.get(
   /static/,
-  toolbox.cacheOnly,
+  toolbox.fastest,
   defaultCacheConfig
 );
 

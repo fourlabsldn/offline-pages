@@ -1,3 +1,16 @@
 .container {
   max-width: 800px;
 }
+
+.navbar-offline-navigation {
+  display: inline-block;
+  float: right;
+  color: white;
+  padding: 0;
+  border-radius: 5px;
+  padding-right: 0;
+}
+
+.navbar-offline-navigation .toggle {
+  background-color: grey;
+}

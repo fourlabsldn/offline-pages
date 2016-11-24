@@ -8,6 +8,8 @@
 
   It allows people, when offline, to browse through previously visited pages.
 
+  This is a watered down version of the sw that has everything together.
+
 
 ================================================================================
 */
