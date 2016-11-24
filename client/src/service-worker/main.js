@@ -61,7 +61,7 @@ toolbox.router.get(
   =============================================================================
   Intercept requests to contacts and build the page dynamically
  */
-toolbox.router.get('/html/contact-info', dynamicPages.contactInfo);
+toolbox.router.get('/html/contact-info/:id', dynamicPages.contactInfo);
 
 // =============================================================================
 // By default, all requests will request the resource from

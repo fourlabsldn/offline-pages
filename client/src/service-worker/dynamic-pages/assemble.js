@@ -13,6 +13,19 @@ requirejs.config({
   },
 });
 
+/**
+ * This function will build the page using a general layout and a page-specific
+ * template. Each of these takes one object as the compilation context.
+ * This function allows the API consumer to specify urls for the templates
+ * and for the data, and also to perform any operations needed on the data.
+ * @method
+ * @param  {String} layoutTemplateUrl [description]
+ * @param  {String} pageTemplateUrl [description]
+ * @param  {Array<String>} dataUrlArray [description]
+ * @param  {Function} dataTransform - Array<String> -> { layoutData, pageData }
+ * @return {Promise<void>} The promise will fail if there is an error.
+ *                             Then, the normal fetch must be done.
+ */
 export default function (layoutTemplateUrl, pageTemplateUrl, dataUrlArray, dataTransform) {
   return new Promise((resolve, reject) => {
     const dataDependencies = dataUrlArray.map(url => `cacheFirstJson!${url}`);
