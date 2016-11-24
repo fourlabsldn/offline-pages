@@ -1,6 +1,14 @@
 import assemble from './assemble';
 import routes from '../routes';
 
+/**
+ * The parameters are provided by sw-toolbox.
+ * @method
+ * @param  {Request} request [description]
+ * @param  {Object} values - Values captured in express-style url pattern matching
+ * @param  {Object} options - Route options
+ * @return {Promise<response>}
+ */
 export default function (request, values, options) { // eslint-disable-line no-unused-vars
   return assemble(
     routes.contactsPage.layoutTemplate,

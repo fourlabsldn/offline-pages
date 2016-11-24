@@ -23,7 +23,7 @@ requirejs.config({
  * @param  {String} pageTemplateUrl [description]
  * @param  {Array<String>} dataUrlArray [description]
  * @param  {Function} dataTransform - Array<String> -> { layoutData, pageData }
- * @return {Promise<void>} The promise will fail if there is an error.
+ * @return {Promise<Response>} The promise will fail if there is an error.
  *                             Then, the normal fetch must be done.
  */
 export default function (layoutTemplateUrl, pageTemplateUrl, dataUrlArray, dataTransform) {
