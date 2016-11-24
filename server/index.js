@@ -98,19 +98,15 @@ app.use('/static', express.static(path.join(__dirname, '../client/build')));
 app.get('/', (req, res) => res.redirect('/html/home'));
 app.get('/html/offline', renderTemplate('offline'));
 app.get('/html/home', renderTemplate('home'));
-app.get('/html/contacts', renderTemplate('contacts'));
 app.get('/html/projects', renderTemplate('projects'));
 app.get('/html/messages', renderTemplate('messages'));
-app.get('/html/contact-info', renderTemplate('contact-info'));
-app.get('/html/contact-info-shell', renderTemplate('contact-info-shell'));
+app.get('/html/contacts', routes['contacts']);
+app.get('/html/contact-info/:id', routes['contact-info']);
 
 // ==================
 // API Routes
 // ==================
-app.get('/api/messages', routes['messages']);
 app.post('/api/new-message', routes['new-message']);
-app.get('/api/contacts', routes['contacts']);
-app.get('/api/projects', routes['projects']);
 app.get('/api/database/:id', routes['database']);
 
 // These two endpoints have `.js` extension because they are Javascript files.

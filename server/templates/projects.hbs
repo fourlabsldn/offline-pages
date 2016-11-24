@@ -18,10 +18,10 @@
 </table>
 
 <script>
-  fetch('/api/projects')
+  fetch('/api/database/projects')
   .then(r => r.json())
   .then(r => {
-    const tableRows = r.projects.map(p => `
+    const tableRows = r.map(p => `
       <tr>
         <th scope="row">${p.name}</th>
         <td>${p.date}</td>

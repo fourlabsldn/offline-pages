@@ -50,7 +50,7 @@
   }
 
   function loadMessages() {
-    fetch('/api/messages')
+    fetch('/api/database/messages')
       .then(m => m.json())
       .then(messages => messages.map(m => `<li class="list-group-item">${m}</li>`))
       .then(messages => (messsagesContainer.innerHTML = messages.join('\n')))

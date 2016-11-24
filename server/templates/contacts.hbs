@@ -13,20 +13,13 @@
     </tr>
   </thead>
   <tbody>
+    {{#each data}}
+      <tr>
+        <td><img src="{{image}}" alt="" style="max-width: 50px"></td>
+        <th scope="row">
+          <a href="/html/contact-info/{{id}}">{{name}}</a>
+        </th>
+      </tr>
+    {{/each}}
   </tbody>
 </table>
-
-<script>
-  fetch('/api/contacts')
-  .then(r => r.json())
-  .then(r => {
-    const tableRows = r.contacts.map(p => `
-      <tr>
-        <td><img src="${p.image}" alt="" style="max-width: 50px"></td>
-        <th scope="row">${p.name}</th>
-      </tr>
-    `);
-
-    document.querySelector('tbody').innerHTML = tableRows.join('');
-  });
-</script>
