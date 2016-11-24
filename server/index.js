@@ -111,7 +111,7 @@ app.get('/api/messages', routes['messages']);
 app.post('/api/new-message', routes['new-message']);
 app.get('/api/contacts', routes['contacts']);
 app.get('/api/projects', routes['projects']);
-app.get('/api/database', routes['database']);
+app.get('/api/database/:id', routes['database']);
 
 // These two endpoints have `.js` extension because they are Javascript files.
 // Returns a precompiled template

@@ -12,5 +12,9 @@ module.exports = (req, res) => {
     project: JSON.parse(fs.readFileSync(projectsFilePath)),
   };
 
-  res.json(db);
+  // If there is no valid ID, we send the whole database.
+  // Obviously in a real application this should never be like that.
+  const responseDB = db[req.params.id] || db;
+
+  res.json(responseDB);
 };
